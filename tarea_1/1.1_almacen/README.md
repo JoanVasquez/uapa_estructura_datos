@@ -17,6 +17,18 @@
 - **Repository**: Abstracción de persistencia de datos
 - **Dependency Injection**: Inyección de dependencias en AlmacenService
 
+### Arquitectura MVC
+
+```
+UI Layer (main.cpp)
+    ↓
+Controller Layer (AlmacenController)
+    ↓
+Service Layer (AlmacenService)
+    ↓
+Repository Layer (AlmacenRepository)
+```
+
 ### Estructura del Proyecto
 
 ```
@@ -27,7 +39,8 @@ include/          # Headers/Interfaces
 ├── ComponenteNacional.h    # Componente nacional
 ├── ComponenteImportado.h   # Componente importado
 ├── AlmacenRepository.h     # Implementación repositorio
-└── AlmacenService.h        # Servicio de aplicación
+├── AlmacenService.h        # Servicio de aplicación
+└── AlmacenController.h     # Controller MVC
 
 src/              # Implementaciones
 ├── ComponenteBase.cpp
@@ -35,7 +48,8 @@ src/              # Implementaciones
 ├── ComponenteImportado.cpp
 ├── AlmacenRepository.cpp
 ├── AlmacenService.cpp
-└── main.cpp               # UI y punto de entrada
+├── AlmacenController.cpp   # Coordinación UI-Service
+└── main.cpp               # UI con patrón MVC
 ```
 
 ### Funcionalidades
@@ -59,8 +73,11 @@ make            # Compilar
 make clean      # Limpiar
 ```
 
-### Manejo de Errores
+### Características Técnicas
 
-- Validación de entrada robusta
-- Excepciones específicas con mensajes descriptivos
-- Manejo seguro de memoria con smart pointers
+- **Patrón MVC**: Separación clara de responsabilidades
+- **using namespace std**: Código más legible
+- **Comentarios explicativos**: Documentación en español
+- **Validación robusta**: Excepciones específicas
+- **Smart pointers**: Gestión segura de memoria
+- **Dependency Injection**: Controllers reciben services

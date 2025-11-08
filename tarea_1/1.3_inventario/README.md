@@ -17,6 +17,18 @@
 - **Template Method**: Estructura común en validaciones
 - **Value Object**: AlertaStock como objeto de valor
 
+### Arquitectura MVC
+
+```
+UI Layer (main.cpp)
+    ↓
+Controller Layer (InventarioController)
+    ↓
+Service Layer (InventarioService)
+    ↓
+Model Layer (Almacen con matriz stock[6][15])
+```
+
 ### Estructura del Proyecto
 
 ```
@@ -24,12 +36,14 @@ include/                      # Headers/Interfaces
 ├── IInventario.h            # Interfaz inventario
 ├── IInventarioService.h     # Interfaz servicio
 ├── Almacen.h               # Implementación matriz stock[6][15]
-└── InventarioService.h     # Servicio de aplicación
+├── InventarioService.h     # Servicio de aplicación
+└── InventarioController.h  # Controller MVC
 
 src/                        # Implementaciones
 ├── Almacen.cpp
 ├── InventarioService.cpp
-└── main.cpp               # UI y punto de entrada
+├── InventarioController.cpp # Coordinación UI-Service
+└── main.cpp               # UI con patrón MVC
 ```
 
 ### Funcionalidades Core
@@ -69,12 +83,14 @@ make            # Compilar
 make clean      # Limpiar
 ```
 
-### Manejo de Errores
+### Características Técnicas
 
-- Validación de rangos (almacén 0-5, producto 0-14)
-- Prevención de valores negativos
-- Excepciones específicas con mensajes descriptivos
-- Validación de entrada en UI
+- **Patrón MVC**: Separación de responsabilidades clara
+- **using namespace std**: Código más limpio
+- **Comentarios explicativos**: Funciones documentadas
+- **Matriz bidimensional**: std::array para seguridad de tipos
+- **Validación robusta**: Rangos, valores negativos
+- **Dependency Injection**: Controller recibe service
 
 ### Datos de Prueba
 

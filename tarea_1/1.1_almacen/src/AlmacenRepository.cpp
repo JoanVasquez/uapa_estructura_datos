@@ -1,34 +1,48 @@
 #include "../include/AlmacenRepository.h"
 #include <stdexcept>
 
-void AlmacenRepository::agregar(std::unique_ptr<IComponente> componente) {
-    if (!componente) throw std::invalid_argument("Componente nulo");
-    
-    std::string codigo = componente->getCodigo();
-    if (componentes.find(codigo) != componentes.end())
-        throw std::runtime_error("Código duplicado: " + codigo);
-    
-    componentes[codigo] = std::move(componente);
+using namespace std;
+
+// Agrega un nuevo componente al repositorio con validación de duplicados
+void AlmacenRepository::agregar(unique_ptr<IComponente> componente) {
+  if (!componente)
+    throw invalid_argument("Componente nulo");
+
+  // Obtener el código antes de mover el puntero
+  string codigo = componente->getCodigo();
+  // Verificar que no exista un componente con el mismo código
+  if (componentes.find(codigo) != componentes.end())
+    throw runtime_error("Código duplicado: " + codigo);
+
+  // Almacenar el componente usando su código como clave
+  componentes[codigo] = move(componente);
 }
 
-IComponente* AlmacenRepository::buscar(const std::string& codigo) {
-    auto it = componentes.find(codigo);
-    return (it != componentes.end()) ? it->second.get() : nullptr;
+// Busca un componente por su código único
+IComponente *AlmacenRepository::buscar(const string &codigo) {
+  auto it = componentes.find(codigo);
+  return (it != componentes.end()) ? it->second.get() : nullptr;
 }
 
-std::vector<IComponente*> AlmacenRepository::filtrar(std::function<bool(const IComponente*)> pred) {
-    std::vector<IComponente*> resultado;
-    for (const auto& par : componentes) {
-        if (pred(par.second.get())) {
-            resultado.push_back(par.second.get());
-        }
+// Filtra componentes usando un predicado (patrón Strategy)
+vector<IComponente *>
+AlmacenRepository::filtrar(function<bool(const IComponente *)> pred) {
+  vector<IComponente *> resultado;
+  // Iterar sobre todos los componentes y aplicar el filtro
+  for (const auto &par : componentes) {
+    if (pred(par.second.get())) {
+      resultado.push_back(par.second.get());
     }
-    return resultado;
+  }
+  return resultado;
 }
 
-bool AlmacenRepository::actualizar(const std::string& codigo, std::function<void(IComponente*)> updater) {
-    auto* componente = buscar(codigo);
-    if (!componente) return false;
-    updater(componente);
-    return true;
+// Actualiza un componente aplicando una función de actualización
+bool AlmacenRepository::actualizar(const string &codigo,
+                                   function<void(IComponente *)> updater) {
+  auto *componente = buscar(codigo);
+  if (!componente)
+    return false;      // Componente no encontrado
+  updater(componente); // Aplicar la actualización
+  return true;
 }

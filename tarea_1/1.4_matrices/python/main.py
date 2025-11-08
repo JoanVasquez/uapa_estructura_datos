@@ -2,11 +2,13 @@
 
 from optimizador_greedy import OptimizadorGreedy
 from redistribucion_service import RedistribucionService
+from redistribucion_controller import RedistribucionController
 
 class RedistribucionUI:
     def __init__(self):
         optimizador = OptimizadorGreedy()
-        self.service = RedistribucionService(optimizador)
+        service = RedistribucionService(optimizador)
+        self.controller = RedistribucionController(service)
     
     def ejecutar(self):
         while True:
@@ -32,13 +34,13 @@ class RedistribucionUI:
     
     def procesar_opcion(self, opcion: int):
         if opcion == 1:
-            self.service.configurar_matrices()
+            self.controller.configurar_matrices()
         elif opcion == 2:
-            self.service.cargar_datos_prueba()
+            self.controller.cargar_datos_prueba()
         elif opcion == 3:
-            self.service.ejecutar_optimizacion()
+            self.controller.ejecutar_optimizacion()
         elif opcion == 4:
-            self.service.mostrar_resultados()
+            self.controller.mostrar_resultados()
         else:
             print("❌ Opción inválida")
 

@@ -1,13 +1,14 @@
+#include "../include/RedistribucionController.h"
 #include "../include/RedistribucionService.h"
 #include "../include/OptimizadorGreedy.h"
 #include <iostream>
 
 class RedistribucionUI {
 private:
-    RedistribucionService service;
+    RedistribucionController controller;
 
 public:
-    RedistribucionUI() : service(std::make_unique<OptimizadorGreedy>()) {}
+    RedistribucionUI() : controller(std::make_unique<RedistribucionService>(std::make_unique<OptimizadorGreedy>())) {}
 
     void ejecutar() {
         int opcion;
@@ -34,10 +35,10 @@ private:
 
     void procesarOpcion(int opcion) {
         switch (opcion) {
-            case 1: service.configurarMatrices(); break;
-            case 2: service.cargarDatosPrueba(); break;
-            case 3: service.ejecutarOptimizacion(); break;
-            case 4: service.mostrarResultados(); break;
+            case 1: controller.configurarMatrices(); break;
+            case 2: controller.cargarDatosPrueba(); break;
+            case 3: controller.ejecutarOptimizacion(); break;
+            case 4: controller.mostrarResultados(); break;
             case 0: std::cout << "👋 Saliendo del sistema...\n"; break;
             default: std::cout << "❌ Opción inválida\n";
         }

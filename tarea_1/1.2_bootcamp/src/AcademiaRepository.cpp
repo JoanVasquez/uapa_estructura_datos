@@ -2,29 +2,37 @@
 #include <stdexcept>
 #include <algorithm>
 
-void AcademiaRepository::agregar(std::unique_ptr<IEstudiante> estudiante) {
+using namespace std;
+
+// Agrega un nuevo estudiante al repositorio con validación de duplicados
+void AcademiaRepository::agregar(unique_ptr<IEstudiante> estudiante) {
     if (!estudiante) {
-        throw std::invalid_argument("Estudiante no puede ser nulo");
+        throw invalid_argument("Estudiante no puede ser nulo");
     }
     
+    // Verificar que no exista un estudiante con la misma matrícula
     if (buscar(estudiante->getMatricula())) {
-        throw std::runtime_error("Matrícula duplicada: " + estudiante->getMatricula());
+        throw runtime_error("Matrícula duplicada: " + estudiante->getMatricula());
     }
     
-    estudiantes.push_back(std::move(estudiante));
+    // Agregar el estudiante al contenedor
+    estudiantes.push_back(move(estudiante));
 }
 
-IEstudiante* AcademiaRepository::buscar(const std::string& matricula) {
-    auto it = std::find_if(estudiantes.begin(), estudiantes.end(),
+// Busca un estudiante por su número de matrícula usando algoritmo STL
+IEstudiante* AcademiaRepository::buscar(const string& matricula) {
+    auto it = find_if(estudiantes.begin(), estudiantes.end(),
         [&matricula](const auto& est) { return est->getMatricula() == matricula; });
     
     return (it != estudiantes.end()) ? it->get() : nullptr;
 }
 
-std::vector<IEstudiante*> AcademiaRepository::obtenerTodos() {
-    std::vector<IEstudiante*> resultado;
-    resultado.reserve(estudiantes.size());
+// Obtiene todos los estudiantes como punteros raw para consulta
+vector<IEstudiante*> AcademiaRepository::obtenerTodos() {
+    vector<IEstudiante*> resultado;
+    resultado.reserve(estudiantes.size()); // Reservar memoria para eficiencia
     
+    // Convertir unique_ptr a raw pointer para consulta
     for (const auto& est : estudiantes) {
         resultado.push_back(est.get());
     }
@@ -32,9 +40,11 @@ std::vector<IEstudiante*> AcademiaRepository::obtenerTodos() {
     return resultado;
 }
 
-std::vector<IEstudiante*> AcademiaRepository::filtrar(std::function<bool(const IEstudiante*)> pred) {
-    std::vector<IEstudiante*> resultado;
+// Filtra estudiantes usando un predicado (función lambda)
+vector<IEstudiante*> AcademiaRepository::filtrar(function<bool(const IEstudiante*)> pred) {
+    vector<IEstudiante*> resultado;
     
+    // Aplicar el predicado a cada estudiante
     for (const auto& est : estudiantes) {
         if (pred(est.get())) {
             resultado.push_back(est.get());
@@ -44,7 +54,8 @@ std::vector<IEstudiante*> AcademiaRepository::filtrar(std::function<bool(const I
     return resultado;
 }
 
-void AcademiaRepository::ordenar(std::function<bool(const IEstudiante*, const IEstudiante*)> comp) {
-    std::sort(estudiantes.begin(), estudiantes.end(),
+// Ordena los estudiantes usando un comparador personalizado
+void AcademiaRepository::ordenar(function<bool(const IEstudiante*, const IEstudiante*)> comp) {
+    sort(estudiantes.begin(), estudiantes.end(),
         [&comp](const auto& a, const auto& b) { return comp(a.get(), b.get()); });
 }

@@ -17,6 +17,18 @@
 - **Template Method**: Estructura común en validaciones
 - **Strategy**: Diferentes algoritmos de ordenamiento
 
+### Arquitectura MVC
+
+```
+UI Layer (main.cpp)
+    ↓
+Controller Layer (AcademiaController)
+    ↓
+Service Layer (AcademiaService)
+    ↓
+Repository Layer (AcademiaRepository)
+```
+
 ### Estructura del Proyecto
 
 ```
@@ -25,13 +37,15 @@ include/                    # Headers/Interfaces
 ├── IAcademiaRepository.h   # Abstracción repositorio
 ├── Estudiante.h           # Implementación estudiante
 ├── AcademiaRepository.h   # Repositorio concreto
-└── AcademiaService.h      # Servicio de aplicación
+├── AcademiaService.h      # Servicio de aplicación
+└── AcademiaController.h   # Controller MVC
 
 src/                       # Implementaciones
 ├── Estudiante.cpp
 ├── AcademiaRepository.cpp
 ├── AcademiaService.cpp
-└── main.cpp              # UI y punto de entrada
+├── AcademiaController.cpp # Coordinación UI-Service
+└── main.cpp              # UI con patrón MVC
 ```
 
 ### Funcionalidades
@@ -58,9 +72,11 @@ make            # Compilar
 make clean      # Limpiar
 ```
 
-### Manejo de Errores
+### Características Técnicas
 
-- Validación de entrada completa
-- Excepciones específicas con mensajes claros
-- Prevención de matrículas duplicadas
-- Validación de rango de calificaciones (0-100)
+- **Patrón MVC**: UI → Controller → Service → Repository
+- **using namespace std**: Sintaxis simplificada
+- **Comentarios explicativos**: Documentación detallada
+- **Validación completa**: Rangos, duplicados, tipos
+- **STL algorithms**: Ordenamiento y filtrado eficiente
+- **Dependency Injection**: Arquitectura desacoplada

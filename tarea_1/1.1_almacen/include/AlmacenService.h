@@ -2,23 +2,34 @@
 #include "IAlmacenRepository.h"
 #include <memory>
 
+using namespace std;
+
+/**
+ * Servicio de lógica de negocio para el almacén de componentes.
+ * Implementa casos de uso y reglas de negocio.
+ * Coordina entre controller y repository.
+ */
 class AlmacenService {
 private:
-    std::unique_ptr<IAlmacenRepository> repository;
+  unique_ptr<IAlmacenRepository> repository; // Repositorio inyectado
 
 public:
-    explicit AlmacenService(std::unique_ptr<IAlmacenRepository> repo);
-    
-    void registrarNacional(const std::string& codigo, const std::string& nombre,
-                          double precio, int cantidad, const std::string& empresa, int minimo = 10);
-    void registrarImportado(const std::string& codigo, const std::string& nombre,
-                           double precio, int cantidad, const std::string& pais, 
-                           double precioUSD, int minimo = 10);
-    
-    void modificarCantidad(const std::string& codigo, int cantidad);
-    void modificarNivelMinimo(const std::string& codigo, int nivel);
-    
-    std::vector<IComponente*> nacionalesPorPrecio(double minimo);
-    std::vector<IComponente*> importadosPorPais(const std::string& pais);
-    std::vector<IComponente*> componentesBajoStock();
+  explicit AlmacenService(unique_ptr<IAlmacenRepository> repo);
+
+  // Casos de uso de registro
+  void registrarNacional(const string &codigo, const string &nombre,
+                         double precio, int cantidad, const string &empresa,
+                         int minimo = 10);
+  void registrarImportado(const string &codigo, const string &nombre,
+                          double precio, int cantidad, const string &pais,
+                          double precioUSD, int minimo = 10);
+
+  // Casos de uso de modificación
+  void modificarCantidad(const string &codigo, int cantidad);
+  void modificarNivelMinimo(const string &codigo, int nivel);
+
+  // Casos de uso de consulta con lógica de negocio
+  vector<IComponente *> nacionalesPorPrecio(double minimo);
+  vector<IComponente *> importadosPorPais(const string &pais);
+  vector<IComponente *> componentesBajoStock();
 };

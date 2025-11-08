@@ -12,36 +12,51 @@
 
 ### Patrones de Diseño
 
+- **MVC Pattern**: Separación UI-Controller-Service
 - **Strategy Pattern**: Diferentes algoritmos de optimización
-- **Dependency Injection**: Inyección de optimizador en servicio
+- **Dependency Injection**: Inyección en todos los niveles
 - **Value Object**: Movimiento como objeto inmutable
-- **Template Method**: Estructura común de optimización
 
 ## Implementaciones
+
+### Arquitectura MVC
+
+```
+UI Layer (main.cpp/main.py)
+    ↓
+Controller Layer (RedistribucionController)
+    ↓
+Service Layer (RedistribucionService)
+    ↓
+Strategy Layer (OptimizadorGreedy)
+```
 
 ### C++ (cpp/)
 ```
 cpp/
 ├── include/
-│   ├── Movimiento.h           # Estructura de datos
-│   ├── IOptimizador.h         # Interfaz optimizador
-│   ├── OptimizadorGreedy.h    # Algoritmo greedy
-│   └── RedistribucionService.h # Servicio aplicación
+│   ├── Movimiento.h              # Estructura de datos
+│   ├── IOptimizador.h            # Interfaz optimizador
+│   ├── OptimizadorGreedy.h       # Algoritmo greedy
+│   ├── RedistribucionService.h   # Servicio aplicación
+│   └── RedistribucionController.h # Controller MVC
 ├── src/
 │   ├── OptimizadorGreedy.cpp
 │   ├── RedistribucionService.cpp
-│   └── main.cpp
+│   ├── RedistribucionController.cpp # Coordinación
+│   └── main.cpp                 # UI con MVC
 └── Makefile
 ```
 
 ### Python (python/)
 ```
 python/
-├── movimiento.py              # Dataclass movimiento
-├── optimizador_base.py        # ABC optimizador
-├── optimizador_greedy.py      # Implementación greedy
-├── redistribucion_service.py  # Servicio aplicación
-└── main.py                    # Programa principal
+├── movimiento.py                 # Dataclass movimiento
+├── optimizador_base.py           # ABC optimizador
+├── optimizador_greedy.py         # Implementación greedy
+├── redistribucion_service.py     # Servicio aplicación
+├── redistribucion_controller.py  # Controller MVC
+└── main.py                       # UI con patrón MVC
 ```
 
 ## Algoritmo de Optimización
@@ -98,16 +113,19 @@ python3 main.py        # Ejecutar directamente
 ## Características Técnicas
 
 ### C++
+- **Patrón MVC**: UI → Controller → Service → Strategy
+- **using namespace std**: Sintaxis simplificada
+- **Comentarios explicativos**: Documentación completa
 - **std::array** para matrices de tamaño fijo
-- **Smart pointers** para gestión de memoria
-- **Validaciones robustas** con excepciones
-- **Algoritmos STL** para optimización
+- **Smart pointers** para gestión segura de memoria
+- **Dependency Injection** en todos los niveles
 
 ### Python
+- **Arquitectura MVC**: Misma estructura que C++
 - **Type hints** para claridad de código
 - **Dataclasses** para estructuras inmutables
 - **ABC** para interfaces abstractas
-- **List comprehensions** para eficiencia
+- **Comentarios explicativos** en español
 
 ## Manejo de Errores
 

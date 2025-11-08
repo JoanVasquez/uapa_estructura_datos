@@ -1,13 +1,14 @@
+#include "../include/InventarioController.h"
 #include "../include/InventarioService.h"
 #include "../include/Almacen.h"
 #include <iostream>
 
 class InventarioUI {
 private:
-    InventarioService service;
+    InventarioController controller;
 
 public:
-    InventarioUI() : service(std::make_unique<Almacen>()) {}
+    InventarioUI() : controller(std::make_unique<InventarioService>(std::make_unique<Almacen>())) {}
 
     void ejecutar() {
         int opcion;
@@ -39,11 +40,11 @@ private:
     void procesarOpcion(int opcion) {
         switch (opcion) {
             case 1: registrarStock(); break;
-            case 2: service.reporteAgotados(); break;
-            case 3: service.reporteAlmacenCritico(); break;
-            case 4: service.reporteStockBajo(); break;
+            case 2: controller.reporteAgotados(); break;
+            case 3: controller.reporteAlmacenCritico(); break;
+            case 4: controller.procesarAlertas(); break;
             case 5: configurarUmbral(); break;
-            case 6: service.mostrarInventarioCompleto(); break;
+            case 6: controller.mostrarInventarioCompleto(); break;
             case 7: verInventarioAlmacen(); break;
             case 8: cargarDatosPrueba(); break;
             case 0: std::cout << "👋 Saliendo del sistema...\n"; break;
@@ -75,7 +76,7 @@ private:
             throw std::invalid_argument("Entrada inválida para cantidad");
         }
         
-        service.actualizarStock(almacen, producto, cantidad);
+        controller.actualizarStock(almacen, producto, cantidad);
     }
 
     void configurarUmbral() {
@@ -87,7 +88,7 @@ private:
             throw std::invalid_argument("Entrada inválida para umbral");
         }
         
-        service.configurarUmbralGlobal(umbral);
+        controller.configurarUmbralGlobal(umbral);
     }
 
     void verInventarioAlmacen() {
@@ -99,20 +100,20 @@ private:
             throw std::invalid_argument("Entrada inválida para almacén");
         }
         
-        service.mostrarInventarioAlmacen(almacen);
+        controller.mostrarInventarioAlmacen(almacen);
     }
 
     void cargarDatosPrueba() {
         // Datos de prueba para demostrar funcionalidades
-        service.actualizarStock(0, 0, 100);  // Stock normal
-        service.actualizarStock(0, 1, 3);    // Stock bajo
-        service.actualizarStock(0, 2, 0);    // Agotado
-        service.actualizarStock(1, 0, 50);
-        service.actualizarStock(1, 1, 2);    // Stock bajo
-        service.actualizarStock(2, 0, 25);   // Almacén con menos stock
-        service.actualizarStock(3, 0, 75);
-        service.actualizarStock(4, 0, 80);
-        service.actualizarStock(5, 0, 90);
+        controller.actualizarStock(0, 0, 100);  // Stock normal
+        controller.actualizarStock(0, 1, 3);    // Stock bajo
+        controller.actualizarStock(0, 2, 0);    // Agotado
+        controller.actualizarStock(1, 0, 50);
+        controller.actualizarStock(1, 1, 2);    // Stock bajo
+        controller.actualizarStock(2, 0, 25);   // Almacén con menos stock
+        controller.actualizarStock(3, 0, 75);
+        controller.actualizarStock(4, 0, 80);
+        controller.actualizarStock(5, 0, 90);
         
         std::cout << "✅ Datos de prueba cargados exitosamente\n";
         std::cout << "💡 Prueba las opciones 2, 3 y 4 para ver los reportes\n";

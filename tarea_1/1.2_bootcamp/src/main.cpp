@@ -1,31 +1,39 @@
+#include "../include/AcademiaController.h"
 #include "../include/AcademiaService.h"
 #include "../include/AcademiaRepository.h"
 #include <iostream>
 #include <iomanip>
 
+using namespace std;
+
+// Clase que maneja la interfaz de usuario para el sistema académico
+// Implementa el patrón MVC como controlador
 class AcademiaUI {
 private:
-    AcademiaService service;
+    AcademiaController controller; // Controlador para operaciones académicas
 
 public:
-    AcademiaUI() : service(std::make_unique<AcademiaRepository>()) {}
+    // Constructor que inicializa el controlador con servicio y repositorio
+    AcademiaUI() : controller(make_unique<AcademiaService>(make_unique<AcademiaRepository>())) {}
 
+    // Método principal que ejecuta el bucle de la interfaz de usuario
     void ejecutar() {
         int opcion;
         do {
             mostrarMenu();
-            std::cin >> opcion;
+            cin >> opcion;
             try {
-                procesarOpcion(opcion);
-            } catch (const std::exception& e) {
-                std::cout << "Error: " << e.what() << std::endl;
+                procesarOpcion(opcion); // Procesar la opción seleccionada
+            } catch (const exception& e) {
+                cout << "Error: " << e.what() << endl; // Manejo de errores
             }
-        } while (opcion != 0);
+        } while (opcion != 0); // Continuar hasta que el usuario elija salir
     }
 
 private:
+    // Muestra el menú principal con todas las opciones disponibles
     void mostrarMenu() {
-        std::cout << "\n=== SISTEMA ACADÉMICO ===\n"
+        cout << "\n=== SISTEMA ACADÉMICO ===\n"
                   << "1. Registrar estudiante\n"
                   << "2. Registrar calificaciones\n"
                   << "3. Mostrar aprobados\n"
@@ -34,82 +42,93 @@ private:
                   << "0. Salir\nOpción: ";
     }
 
+    // Procesa la opción seleccionada por el usuario usando patrón Command
     void procesarOpcion(int opcion) {
         switch (opcion) {
-            case 1: registrarEstudiante(); break;
-            case 2: registrarCalificaciones(); break;
-            case 3: mostrarAprobados(); break;
-            case 4: mostrarOrdenados(); break;
-            case 5: mostrarTodos(); break;
-            case 0: std::cout << "Saliendo...\n"; break;
-            default: std::cout << "Opción inválida\n";
+            case 1: registrarEstudiante(); break;     // Crear nuevo estudiante
+            case 2: registrarCalificaciones(); break; // Asignar calificaciones
+            case 3: mostrarAprobados(); break;        // Filtrar aprobados
+            case 4: mostrarOrdenados(); break;        // Ordenar por promedio
+            case 5: mostrarTodos(); break;            // Mostrar todos
+            case 0: cout << "Saliendo...\n"; break;
+            default: cout << "Opción inválida\n";
         }
     }
 
+    // Registra un nuevo estudiante en el sistema
     void registrarEstudiante() {
-        std::string nombre, matricula;
-        std::cout << "Nombre: ";
-        std::cin.ignore();
-        std::getline(std::cin, nombre);
-        std::cout << "Matrícula: ";
-        std::cin >> matricula;
+        string nombre, matricula;
+        cout << "Nombre: ";
+        cin.ignore(); // Limpiar buffer de entrada
+        getline(cin, nombre); // Leer nombre completo con espacios
+        cout << "Matrícula: ";
+        cin >> matricula;
         
-        service.registrarEstudiante(nombre, matricula);
-        std::cout << "Estudiante registrado exitosamente\n";
+        controller.registrarEstudiante(nombre, matricula);
+        cout << "Estudiante registrado exitosamente\n";
     }
 
+    // Registra las 5 calificaciones de un estudiante
     void registrarCalificaciones() {
-        std::string matricula;
-        std::array<double, 5> notas;
+        string matricula;
+        array<double, 5> notas;
         
-        std::cout << "Matrícula: ";
-        std::cin >> matricula;
+        cout << "Matrícula: ";
+        cin >> matricula;
         
-        std::cout << "Ingrese 5 calificaciones:\n";
+        // Solicitar las 5 calificaciones
+        cout << "Ingrese 5 calificaciones:\n";
         for (int i = 0; i < 5; ++i) {
-            std::cout << "Calificación " << (i + 1) << ": ";
-            std::cin >> notas[i];
+            cout << "Calificación " << (i + 1) << ": ";
+            cin >> notas[i];
         }
         
-        service.registrarCalificaciones(matricula, notas);
-        std::cout << "Calificaciones registradas exitosamente\n";
+        controller.registrarCalificaciones(matricula, notas);
+        cout << "Calificaciones registradas exitosamente\n";
     }
 
+    // Muestra solo los estudiantes aprobados (promedio >= 70)
     void mostrarAprobados() {
-        auto aprobados = service.obtenerAprobados();
-        std::cout << "\n=== ESTUDIANTES APROBADOS ===\n";
+        auto aprobados = controller.obtenerAprobados();
+        cout << "\n=== ESTUDIANTES APROBADOS ===\n";
         mostrarEstudiantes(aprobados);
     }
 
+    // Muestra estudiantes ordenados por promedio de mayor a menor
     void mostrarOrdenados() {
-        auto ordenados = service.obtenerOrdenadosPorPromedio();
-        std::cout << "\n=== ESTUDIANTES ORDENADOS POR PROMEDIO ===\n";
+        auto ordenados = controller.obtenerOrdenadosPorPromedio();
+        cout << "\n=== ESTUDIANTES ORDENADOS POR PROMEDIO ===\n";
         mostrarEstudiantes(ordenados);
     }
 
+    // Muestra todos los estudiantes registrados
     void mostrarTodos() {
-        auto todos = service.obtenerTodos();
-        std::cout << "\n=== TODOS LOS ESTUDIANTES ===\n";
+        auto todos = controller.obtenerTodos();
+        cout << "\n=== TODOS LOS ESTUDIANTES ===\n";
         mostrarEstudiantes(todos);
     }
 
-    void mostrarEstudiantes(const std::vector<IEstudiante*>& estudiantes) {
+    // Método auxiliar que muestra una lista de estudiantes en formato tabular
+    void mostrarEstudiantes(const vector<IEstudiante*>& estudiantes) {
         if (estudiantes.empty()) {
-            std::cout << "No hay estudiantes para mostrar\n";
+            cout << "No hay estudiantes para mostrar\n";
             return;
         }
         
-        std::cout << std::fixed << std::setprecision(2);
+        // Configurar formato de salida para promedios
+        cout << fixed << setprecision(2);
         for (const auto* est : estudiantes) {
-            std::cout << est->getMatricula() << " | " 
+            cout << est->getMatricula() << " | " 
                       << est->getNombre() << " | "
                       << "Promedio: " << est->getPromedio() << " | "
-                      << est->getEstado() << std::endl;
+                      << est->getEstado() << endl;
         }
     }
 };
 
+// Función principal que inicia la aplicación del sistema académico
 int main() {
+    // Crear la interfaz de usuario y ejecutar el sistema
     AcademiaUI app;
     app.ejecutar();
     return 0;

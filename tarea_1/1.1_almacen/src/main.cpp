@@ -1,144 +1,203 @@
+#include "../include/AlmacenController.h"
 #include "../include/AlmacenService.h"
 #include "../include/AlmacenRepository.h"
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
+using namespace std;
+
+// Clase que maneja la interfaz de usuario para el sistema de almacén
+// Implementa el patrón MVC como controlador
 class AlmacenUI {
 private:
-    AlmacenService service;
+  AlmacenController controller; // Controlador para operaciones del almacén
 
 public:
-    AlmacenUI() : service(std::make_unique<AlmacenRepository>()) {}
+  // Constructor que inicializa el controlador con servicio y repositorio
+  AlmacenUI() : controller(make_unique<AlmacenService>(make_unique<AlmacenRepository>())) {}
 
-    void ejecutar() {
-        int opcion;
-        do {
-            mostrarMenu();
-            std::cin >> opcion;
-            try {
-                procesarOpcion(opcion);
-            } catch (const std::exception& e) {
-                std::cout << "Error: " << e.what() << std::endl;
-            }
-        } while (opcion != 0);
-    }
+  // Método principal que ejecuta el bucle de la interfaz de usuario
+  void ejecutar() {
+    int opcion;
+    do {
+      mostrarMenu();
+      cin >> opcion;
+      try {
+        procesarOpcion(opcion); // Procesar la opción seleccionada
+      } catch (const exception &e) {
+        cout << "Error: " << e.what() << endl; // Manejo de errores
+      }
+    } while (opcion != 0); // Continuar hasta que el usuario elija salir
+  }
 
 private:
-    void mostrarMenu() {
-        std::cout << "\n=== ALMACÉN DE COMPONENTES ===\n"
-                  << "1. Registrar componente nacional\n"
-                  << "2. Registrar componente importado\n"
-                  << "3. Modificar cantidad\n"
-                  << "4. Modificar nivel mínimo\n"
-                  << "5. Nacionales por precio\n"
-                  << "6. Importados por país\n"
-                  << "7. Componentes bajo stock\n"
-                  << "0. Salir\nOpción: ";
+  // Muestra el menú principal con todas las opciones disponibles
+  void mostrarMenu() {
+    cout << "\n=== ALMACÉN DE COMPONENTES ===\n"
+         << "1. Registrar componente nacional\n"
+         << "2. Registrar componente importado\n"
+         << "3. Modificar cantidad\n"
+         << "4. Modificar nivel mínimo\n"
+         << "5. Nacionales por precio\n"
+         << "6. Importados por país\n"
+         << "7. Componentes bajo stock\n"
+         << "0. Salir\nOpción: ";
+  }
+
+  // Procesa la opción seleccionada por el usuario usando patrón Command
+  void procesarOpcion(int opcion) {
+    switch (opcion) {
+    case 1:
+      registrarNacional(); // Registrar componente de fabricación nacional
+      break;
+    case 2:
+      registrarImportado(); // Registrar componente importado
+      break;
+    case 3:
+      modificarCantidad(); // Actualizar stock de un componente
+      break;
+    case 4:
+      modificarNivelMinimo(); // Cambiar umbral mínimo de inventario
+      break;
+    case 5:
+      listarNacionalesPorPrecio(); // Filtrar nacionales por precio
+      break;
+    case 6:
+      listarImportadosPorPais(); // Filtrar importados por país
+      break;
+    case 7:
+      listarBajoStock(); // Mostrar componentes con stock crítico
+      break;
+    case 0:
+      cout << "Saliendo...\n";
+      break;
+    default:
+      cout << "Opción inválida\n";
+    }
+  }
+
+  // Registra un nuevo componente de fabricación nacional
+  void registrarNacional() {
+    string codigo, nombre, empresa;
+    double precio;
+    int cantidad, minimo;
+
+    // Solicitar datos del componente nacional
+    cout << "Código: ";
+    cin >> codigo;
+    cout << "Nombre: ";
+    cin >> nombre;
+    cout << "Precio costo: ";
+    cin >> precio;
+    cout << "Cantidad: ";
+    cin >> cantidad;
+    cout << "Empresa: ";
+    cin >> empresa;
+    cout << "Nivel mínimo: ";
+    cin >> minimo;
+
+    // Crear y almacenar el componente usando el servicio
+    controller.registrarComponenteNacional(codigo, nombre, precio, cantidad, empresa, minimo);
+    cout << "Componente registrado exitosamente\n";
+  }
+
+  // Registra un nuevo componente importado con precio en USD
+  void registrarImportado() {
+    string codigo, nombre, pais;
+    double precio, precioUSD;
+    int cantidad, minimo;
+
+    // Solicitar datos del componente importado
+    cout << "Código: ";
+    cin >> codigo;
+    cout << "Nombre: ";
+    cin >> nombre;
+    cout << "Precio costo: ";
+    cin >> precio;
+    cout << "Cantidad: ";
+    cin >> cantidad;
+    cout << "País: ";
+    cin >> pais;
+    cout << "Precio USD: ";
+    cin >> precioUSD;
+    cout << "Nivel mínimo: ";
+    cin >> minimo;
+
+    // Crear y almacenar el componente importado usando el servicio
+    controller.registrarComponenteImportado(codigo, nombre, precio, cantidad, pais, precioUSD, minimo);
+    cout << "Componente registrado exitosamente\n";
+  }
+
+  // Modifica la cantidad en stock de un componente específico
+  void modificarCantidad() {
+    string codigo;
+    int cantidad;
+    cout << "Código: ";
+    cin >> codigo;
+    cout << "Nueva cantidad: ";
+    cin >> cantidad;
+    controller.modificarCantidad(codigo, cantidad);
+    cout << "Cantidad actualizada\n";
+  }
+
+  // Modifica el nivel mínimo de inventario de un componente
+  void modificarNivelMinimo() {
+    string codigo;
+    int nivel;
+    cout << "Código: ";
+    cin >> codigo;
+    cout << "Nuevo nivel mínimo: ";
+    cin >> nivel;
+    controller.modificarNivelMinimo(codigo, nivel);
+    cout << "Nivel mínimo actualizado\n";
+  }
+
+  // Lista componentes nacionales que superan un precio mínimo
+  void listarNacionalesPorPrecio() {
+    double minimo;
+    cout << "Precio mínimo: ";
+    cin >> minimo;
+    auto componentes = controller.obtenerNacionalesPorPrecio(minimo);
+    mostrarComponentes(componentes);
+  }
+
+  // Lista componentes importados de un país específico
+  void listarImportadosPorPais() {
+    string pais;
+    cout << "País: ";
+    cin >> pais;
+    auto componentes = controller.obtenerImportadosPorPais(pais);
+    mostrarComponentes(componentes);
+  }
+
+  // Lista todos los componentes que están bajo el nivel mínimo de stock
+  void listarBajoStock() {
+    auto componentes = controller.obtenerComponentesBajoStock();
+    cout << "\n=== COMPONENTES BAJO STOCK ===\n";
+    mostrarComponentes(componentes);
+  }
+
+  // Muestra una lista de componentes en formato tabular
+  void mostrarComponentes(const vector<IComponente *> &componentes) {
+    if (componentes.empty()) {
+      cout << "No se encontraron componentes\n";
+      return;
     }
 
-    void procesarOpcion(int opcion) {
-        switch (opcion) {
-            case 1: registrarNacional(); break;
-            case 2: registrarImportado(); break;
-            case 3: modificarCantidad(); break;
-            case 4: modificarNivelMinimo(); break;
-            case 5: listarNacionalesPorPrecio(); break;
-            case 6: listarImportadosPorPais(); break;
-            case 7: listarBajoStock(); break;
-            case 0: std::cout << "Saliendo...\n"; break;
-            default: std::cout << "Opción inválida\n";
-        }
+    // Configurar formato de salida para precios
+    cout << fixed << setprecision(2);
+    for (const auto *c : componentes) {
+      cout << c->getCodigo() << " | " << c->getNombre() << " | $"
+                << c->calcularPrecioVenta() << " | Stock: " << c->getCantidad()
+                << " | " << c->getTipo() << endl;
     }
-
-    void registrarNacional() {
-        std::string codigo, nombre, empresa;
-        double precio;
-        int cantidad, minimo;
-        
-        std::cout << "Código: "; std::cin >> codigo;
-        std::cout << "Nombre: "; std::cin >> nombre;
-        std::cout << "Precio costo: "; std::cin >> precio;
-        std::cout << "Cantidad: "; std::cin >> cantidad;
-        std::cout << "Empresa: "; std::cin >> empresa;
-        std::cout << "Nivel mínimo: "; std::cin >> minimo;
-        
-        service.registrarNacional(codigo, nombre, precio, cantidad, empresa, minimo);
-        std::cout << "Componente registrado exitosamente\n";
-    }
-
-    void registrarImportado() {
-        std::string codigo, nombre, pais;
-        double precio, precioUSD;
-        int cantidad, minimo;
-        
-        std::cout << "Código: "; std::cin >> codigo;
-        std::cout << "Nombre: "; std::cin >> nombre;
-        std::cout << "Precio costo: "; std::cin >> precio;
-        std::cout << "Cantidad: "; std::cin >> cantidad;
-        std::cout << "País: "; std::cin >> pais;
-        std::cout << "Precio USD: "; std::cin >> precioUSD;
-        std::cout << "Nivel mínimo: "; std::cin >> minimo;
-        
-        service.registrarImportado(codigo, nombre, precio, cantidad, pais, precioUSD, minimo);
-        std::cout << "Componente registrado exitosamente\n";
-    }
-
-    void modificarCantidad() {
-        std::string codigo;
-        int cantidad;
-        std::cout << "Código: "; std::cin >> codigo;
-        std::cout << "Nueva cantidad: "; std::cin >> cantidad;
-        service.modificarCantidad(codigo, cantidad);
-        std::cout << "Cantidad actualizada\n";
-    }
-
-    void modificarNivelMinimo() {
-        std::string codigo;
-        int nivel;
-        std::cout << "Código: "; std::cin >> codigo;
-        std::cout << "Nuevo nivel mínimo: "; std::cin >> nivel;
-        service.modificarNivelMinimo(codigo, nivel);
-        std::cout << "Nivel mínimo actualizado\n";
-    }
-
-    void listarNacionalesPorPrecio() {
-        double minimo;
-        std::cout << "Precio mínimo: "; std::cin >> minimo;
-        auto componentes = service.nacionalesPorPrecio(minimo);
-        mostrarComponentes(componentes);
-    }
-
-    void listarImportadosPorPais() {
-        std::string pais;
-        std::cout << "País: "; std::cin >> pais;
-        auto componentes = service.importadosPorPais(pais);
-        mostrarComponentes(componentes);
-    }
-
-    void listarBajoStock() {
-        auto componentes = service.componentesBajoStock();
-        std::cout << "\n=== COMPONENTES BAJO STOCK ===\n";
-        mostrarComponentes(componentes);
-    }
-
-    void mostrarComponentes(const std::vector<IComponente*>& componentes) {
-        if (componentes.empty()) {
-            std::cout << "No se encontraron componentes\n";
-            return;
-        }
-        
-        std::cout << std::fixed << std::setprecision(2);
-        for (const auto* c : componentes) {
-            std::cout << c->getCodigo() << " | " << c->getNombre() 
-                      << " | $" << c->calcularPrecioVenta() 
-                      << " | Stock: " << c->getCantidad() 
-                      << " | " << c->getTipo() << std::endl;
-        }
-    }
+  }
 };
 
+// Función principal que inicia la aplicación del almacén
 int main() {
-    AlmacenUI app;
-    app.ejecutar();
-    return 0;
+  // Crear la interfaz de usuario y ejecutar el sistema
+  AlmacenUI app;
+  app.ejecutar();
+  return 0;
 }
