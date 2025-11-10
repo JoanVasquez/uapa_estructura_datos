@@ -3,29 +3,31 @@
 #include "../include/Almacen.h"
 #include <iostream>
 
+using namespace std;
+
 class InventarioUI {
 private:
     InventarioController controller;
 
 public:
-    InventarioUI() : controller(std::make_unique<InventarioService>(std::make_unique<Almacen>())) {}
+    InventarioUI() : controller(make_unique<InventarioService>(make_unique<Almacen>())) {}
 
     void ejecutar() {
         int opcion;
         do {
             mostrarMenu();
-            std::cin >> opcion;
+            cin >> opcion;
             try {
                 procesarOpcion(opcion);
-            } catch (const std::exception& e) {
-                std::cout << "❌ Error: " << e.what() << std::endl;
+            } catch (const exception& e) {
+                cout << "❌ Error: " << e.what() << endl;
             }
         } while (opcion != 0);
     }
 
 private:
     void mostrarMenu() {
-        std::cout << "\n=== CONTROL DE INVENTARIO MULTI-SUCURSAL ===\n"
+        cout << "\n=== CONTROL DE INVENTARIO MULTI-SUCURSAL ===\n"
                   << "1. Registrar stock\n"
                   << "2. Detectar productos agotados\n"
                   << "3. Identificar almacén crítico\n"
@@ -47,33 +49,33 @@ private:
             case 6: controller.mostrarInventarioCompleto(); break;
             case 7: verInventarioAlmacen(); break;
             case 8: cargarDatosPrueba(); break;
-            case 0: std::cout << "👋 Saliendo del sistema...\n"; break;
-            default: std::cout << "❌ Opción inválida\n";
+            case 0: cout << "👋 Saliendo del sistema...\n"; break;
+            default: cout << "❌ Opción inválida\n";
         }
     }
 
     void registrarStock() {
         int almacen, producto, cantidad;
         
-        std::cout << "Almacén (0-5): ";
-        if (!(std::cin >> almacen)) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            throw std::invalid_argument("Entrada inválida para almacén");
+        cout << "Almacén (0-5): ";
+        if (!(cin >> almacen)) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            throw invalid_argument("Entrada inválida para almacén");
         }
         
-        std::cout << "Producto (0-14): ";
-        if (!(std::cin >> producto)) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            throw std::invalid_argument("Entrada inválida para producto");
+        cout << "Producto (0-14): ";
+        if (!(cin >> producto)) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            throw invalid_argument("Entrada inválida para producto");
         }
         
-        std::cout << "Cantidad: ";
-        if (!(std::cin >> cantidad)) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            throw std::invalid_argument("Entrada inválida para cantidad");
+        cout << "Cantidad: ";
+        if (!(cin >> cantidad)) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            throw invalid_argument("Entrada inválida para cantidad");
         }
         
         controller.actualizarStock(almacen, producto, cantidad);
@@ -81,11 +83,11 @@ private:
 
     void configurarUmbral() {
         int umbral;
-        std::cout << "Nuevo umbral mínimo: ";
-        if (!(std::cin >> umbral)) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            throw std::invalid_argument("Entrada inválida para umbral");
+        cout << "Nuevo umbral mínimo: ";
+        if (!(cin >> umbral)) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            throw invalid_argument("Entrada inválida para umbral");
         }
         
         controller.configurarUmbralGlobal(umbral);
@@ -93,11 +95,11 @@ private:
 
     void verInventarioAlmacen() {
         int almacen;
-        std::cout << "Almacén (0-5): ";
-        if (!(std::cin >> almacen)) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            throw std::invalid_argument("Entrada inválida para almacén");
+        cout << "Almacén (0-5): ";
+        if (!(cin >> almacen)) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            throw invalid_argument("Entrada inválida para almacén");
         }
         
         controller.mostrarInventarioAlmacen(almacen);
@@ -115,13 +117,13 @@ private:
         controller.actualizarStock(4, 0, 80);
         controller.actualizarStock(5, 0, 90);
         
-        std::cout << "✅ Datos de prueba cargados exitosamente\n";
-        std::cout << "💡 Prueba las opciones 2, 3 y 4 para ver los reportes\n";
+        cout << "✅ Datos de prueba cargados exitosamente\n";
+        cout << "💡 Prueba las opciones 2, 3 y 4 para ver los reportes\n";
     }
 };
 
 int main() {
-    std::cout << "🏢 Iniciando Sistema de Control de Inventario Multi-Sucursal\n";
+    cout << "🏢 Iniciando Sistema de Control de Inventario Multi-Sucursal\n";
     
     InventarioUI app;
     app.ejecutar();

@@ -3,29 +3,31 @@
 #include "../include/OptimizadorGreedy.h"
 #include <iostream>
 
+using namespace std;
+
 class RedistribucionUI {
 private:
     RedistribucionController controller;
 
 public:
-    RedistribucionUI() : controller(std::make_unique<RedistribucionService>(std::make_unique<OptimizadorGreedy>())) {}
+    RedistribucionUI() : controller(make_unique<RedistribucionService>(make_unique<OptimizadorGreedy>())) {}
 
     void ejecutar() {
         int opcion;
         do {
             mostrarMenu();
-            std::cin >> opcion;
+            cin >> opcion;
             try {
                 procesarOpcion(opcion);
-            } catch (const std::exception& e) {
-                std::cout << "❌ Error: " << e.what() << std::endl;
+            } catch (const exception& e) {
+                cout << "❌ Error: " << e.what() << endl;
             }
         } while (opcion != 0);
     }
 
 private:
     void mostrarMenu() {
-        std::cout << "\n=== REASIGNACIÓN ÓPTIMA DE PRODUCTOS ===\n"
+        cout << "\n=== REASIGNACIÓN ÓPTIMA DE PRODUCTOS ===\n"
                   << "1. Configurar matrices manualmente\n"
                   << "2. Cargar datos de prueba\n"
                   << "3. Ejecutar optimización\n"
@@ -39,14 +41,14 @@ private:
             case 2: controller.cargarDatosPrueba(); break;
             case 3: controller.ejecutarOptimizacion(); break;
             case 4: controller.mostrarResultados(); break;
-            case 0: std::cout << "👋 Saliendo del sistema...\n"; break;
-            default: std::cout << "❌ Opción inválida\n";
+            case 0: cout << "👋 Saliendo del sistema...\n"; break;
+            default: cout << "❌ Opción inválida\n";
         }
     }
 };
 
 int main() {
-    std::cout << "🚚 Sistema de Reasignación Óptima de Productos\n";
+    cout << "🚚 Sistema de Reasignación Óptima de Productos\n";
     
     RedistribucionUI app;
     app.ejecutar();

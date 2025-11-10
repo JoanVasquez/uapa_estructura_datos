@@ -58,11 +58,11 @@ private:
     // Registra un nuevo estudiante en el sistema
     void registrarEstudiante() {
         string nombre, matricula;
-        cout << "Nombre: ";
         cin.ignore(); // Limpiar buffer de entrada
+        cout << "Nombre: ";
         getline(cin, nombre); // Leer nombre completo con espacios
         cout << "Matrícula: ";
-        cin >> matricula;
+        getline(cin, matricula);
         
         controller.registrarEstudiante(nombre, matricula);
         cout << "Estudiante registrado exitosamente\n";
@@ -73,8 +73,9 @@ private:
         string matricula;
         array<double, 5> notas;
         
+        cin.ignore(); // Limpiar buffer
         cout << "Matrícula: ";
-        cin >> matricula;
+        getline(cin, matricula);
         
         // Solicitar las 5 calificaciones
         cout << "Ingrese 5 calificaciones:\n";

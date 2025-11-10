@@ -73,6 +73,7 @@ private:
       break;
     default:
       cout << "Opción inválida\n";
+      break;
     }
   }
 
@@ -82,17 +83,19 @@ private:
     double precio;
     int cantidad, minimo;
 
+    cin.ignore(); // Limpiar buffer
     // Solicitar datos del componente nacional
     cout << "Código: ";
-    cin >> codigo;
+    getline(cin, codigo);
     cout << "Nombre: ";
-    cin >> nombre;
+    getline(cin, nombre);
     cout << "Precio costo: ";
     cin >> precio;
     cout << "Cantidad: ";
     cin >> cantidad;
+    cin.ignore(); // Limpiar buffer después de números
     cout << "Empresa: ";
-    cin >> empresa;
+    getline(cin, empresa);
     cout << "Nivel mínimo: ";
     cin >> minimo;
 
@@ -107,17 +110,19 @@ private:
     double precio, precioUSD;
     int cantidad, minimo;
 
+    cin.ignore(); // Limpiar buffer
     // Solicitar datos del componente importado
     cout << "Código: ";
-    cin >> codigo;
+    getline(cin, codigo);
     cout << "Nombre: ";
-    cin >> nombre;
+    getline(cin, nombre);
     cout << "Precio costo: ";
     cin >> precio;
     cout << "Cantidad: ";
     cin >> cantidad;
+    cin.ignore(); // Limpiar buffer después de números
     cout << "País: ";
-    cin >> pais;
+    getline(cin, pais);
     cout << "Precio USD: ";
     cin >> precioUSD;
     cout << "Nivel mínimo: ";
@@ -132,8 +137,9 @@ private:
   void modificarCantidad() {
     string codigo;
     int cantidad;
+    cin.ignore(); // Limpiar buffer
     cout << "Código: ";
-    cin >> codigo;
+    getline(cin, codigo);
     cout << "Nueva cantidad: ";
     cin >> cantidad;
     controller.modificarCantidad(codigo, cantidad);
@@ -144,8 +150,9 @@ private:
   void modificarNivelMinimo() {
     string codigo;
     int nivel;
+    cin.ignore(); // Limpiar buffer
     cout << "Código: ";
-    cin >> codigo;
+    getline(cin, codigo);
     cout << "Nuevo nivel mínimo: ";
     cin >> nivel;
     controller.modificarNivelMinimo(codigo, nivel);
@@ -164,8 +171,9 @@ private:
   // Lista componentes importados de un país específico
   void listarImportadosPorPais() {
     string pais;
+    cin.ignore(); // Limpiar buffer
     cout << "País: ";
-    cin >> pais;
+    getline(cin, pais);
     auto componentes = controller.obtenerImportadosPorPais(pais);
     mostrarComponentes(componentes);
   }

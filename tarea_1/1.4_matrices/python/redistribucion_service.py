@@ -53,9 +53,13 @@ class RedistribucionService:
             stock = []
             for a in range(6):
                 print(f"Almacén {a} (15 productos): ", end="")
-                fila = list(map(int, input().split()))
-                if len(fila) != 15:
-                    fila = fila[:15] + [0] * (15 - len(fila))
+                entrada = input().strip()
+                if entrada:
+                    fila = list(map(int, entrada.split()))
+                    if len(fila) != 15:
+                        fila = fila[:15] + [0] * (15 - len(fila))
+                else:
+                    fila = [0] * 15
                 stock.append(fila)
             
             print("Configurando distancias:")
