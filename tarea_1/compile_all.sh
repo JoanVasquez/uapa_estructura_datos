@@ -1,19 +1,19 @@
 #!/bin/bash
-echo "Compilando todos los proyectos para Linux..."
+echo "Compilando todos los proyectos..."
 
-cd 1.1_almacen
-echo "=== Compilando Almacen ==="
-make clean && make
-cd ..
-
-cd 1.2_bootcamp
-echo "=== Compilando Academia ==="
-make clean && make
-cd ..
-
-cd 1.3_inventario
-echo "=== Compilando Inventario ==="
-make clean && make
-cd ..
+for dir in 1.1_almacen 1.2_bootcamp 1.3_inventario; do
+    echo "=== Compilando $dir ==="
+    cd $dir
+    
+    echo "  -> Linux"
+    make clean && make
+    
+    echo "  -> Windows"
+    make -f Makefile.win clean && make -f Makefile.win
+    
+    cd ..
+done
 
 echo "Compilacion completada!"
+echo "Ejecutables Linux: almacen, academia, inventario"
+echo "Ejecutables Windows: almacen.exe, academia.exe, inventario.exe"
