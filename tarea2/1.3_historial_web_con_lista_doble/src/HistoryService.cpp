@@ -9,7 +9,7 @@ HistoryService::HistoryService(std::unique_ptr<IHistoryRepository> repo)
 
 void HistoryService::visitPage(const std::string& url) {
     if (!isValidUrl(url)) {
-        throw std::invalid_argument("URL no válida");
+        throw std::invalid_argument("URL no valida");
     }
     
     std::string datetime = getCurrentDateTime();
@@ -18,7 +18,7 @@ void HistoryService::visitPage(const std::string& url) {
 
 bool HistoryService::removePage(const std::string& url) {
     if (!isValidUrl(url)) {
-        throw std::invalid_argument("URL no válida");
+        throw std::invalid_argument("URL no valida");
     }
     
     return repository->removePage(url);

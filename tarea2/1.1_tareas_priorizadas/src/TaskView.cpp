@@ -50,7 +50,7 @@ void TaskView::showSuccess(const std::string& success) {
 void TaskView::showExecutionTimes(long long insertTime, long long removeTime, 
                                 long long getPendingTime, long long markCompletedTime, 
                                 long long totalTime) {
-    std::cout << "\n=== TIEMPOS DE EJECUCIÓN ===\n";
+    std::cout << "\n=== TIEMPOS DE EJECUCION ===\n";
     std::cout << "Insertar tarea: " << insertTime << " microsegundos\n";
     std::cout << "Eliminar tarea: " << removeTime << " microsegundos\n";
     std::cout << "Obtener pendientes: " << getPendingTime << " microsegundos\n";
@@ -76,7 +76,7 @@ int TaskView::getTaskPriority() {
 
 int TaskView::getUserChoice() {
     int choice;
-    std::cout << "Seleccione una opción: ";
+    std::cout << "Seleccione una opcion: ";
     std::cin >> choice;
     return choice;
 }
@@ -122,7 +122,7 @@ void TaskView::run(TaskController& controller) {
                     showMessage("Saliendo del programa...");
                     break;
                 default:
-                    showError("Opción inválida");
+                    showError("Opcion invalida");
                     break;
             }
         } catch (const std::exception& e) {

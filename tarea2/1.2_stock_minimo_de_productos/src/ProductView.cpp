@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 void ProductView::showMenu() {
-    std::cout << "\n=== SISTEMA DE INVENTARIO - STOCK MÍNIMO ===\n";
+    std::cout << "\n=== SISTEMA DE INVENTARIO - STOCK MINIMO ===\n";
     std::cout << "1. Agregar producto\n";
     std::cout << "2. Mostrar productos con stock bajo (< 5)\n";
     std::cout << "3. Actualizar stock de producto\n";
@@ -48,7 +48,7 @@ void ProductView::showSuccess(const std::string& success) {
 
 void ProductView::showExecutionTimes(long long insertTime, long long getLowStockTime, 
                                    long long updateStockTime, long long totalTime) {
-    std::cout << "\n=== TIEMPOS DE EJECUCIÓN ===\n";
+    std::cout << "\n=== TIEMPOS DE EJECUCION ===\n";
     std::cout << "Insertar producto: " << insertTime << " microsegundos\n";
     std::cout << "Obtener stock bajo: " << getLowStockTime << " microsegundos\n";
     std::cout << "Actualizar stock: " << updateStockTime << " microsegundos\n";
@@ -81,7 +81,7 @@ int ProductView::getProductQuantity() {
 
 int ProductView::getUserChoice() {
     int choice;
-    std::cout << "Seleccione una opción: ";
+    std::cout << "Seleccione una opcion: ";
     std::cin >> choice;
     return choice;
 }
@@ -128,7 +128,7 @@ void ProductView::run(ProductController& controller) {
                     showMessage("Saliendo del programa...");
                     break;
                 default:
-                    showError("Opción inválida");
+                    showError("Opcion invalida");
                     break;
             }
         } catch (const std::exception& e) {

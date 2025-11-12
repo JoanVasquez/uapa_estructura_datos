@@ -31,7 +31,7 @@ int main() {
         );
         
     } catch (const std::exception& e) {
-        TaskView::showError("Error crítico: " + std::string(e.what()));
+        TaskView::showError("Error critico: " + std::string(e.what()));
         return 1;
     }
     

@@ -6,21 +6,21 @@
 
 void HistoryView::showMenu() {
     std::cout << "\n=== NAVEGADOR WEB - HISTORIAL ===\n";
-    std::cout << "1. Visitar página\n";
-    std::cout << "2. Mostrar historial (orden cronológico inverso)\n";
-    std::cout << "3. Navegar hacia atrás\n";
+    std::cout << "1. Visitar pagina\n";
+    std::cout << "2. Mostrar historial (orden cronologico inverso)\n";
+    std::cout << "3. Navegar hacia atras\n";
     std::cout << "4. Navegar hacia adelante\n";
-    std::cout << "5. Eliminar página del historial\n";
-    std::cout << "6. Mostrar página actual\n";
+    std::cout << "5. Eliminar pagina del historial\n";
+    std::cout << "6. Mostrar pagina actual\n";
     std::cout << "7. Salir\n";
     std::cout << "================================\n";
 }
 
 void HistoryView::showHistory(const PageArray& pages) {
-    std::cout << "\n=== HISTORIAL DE NAVEGACIÓN (ÚLTIMA A PRIMERA) ===\n";
+    std::cout << "\n=== HISTORIAL DE NAVEGACION (ULTIMA A PRIMERA) ===\n";
     
     if (pages.count == 0) {
-        std::cout << "No hay páginas en el historial.\n";
+        std::cout << "No hay paginas en el historial.\n";
         return;
     }
     
@@ -36,12 +36,12 @@ void HistoryView::showHistory(const PageArray& pages) {
 }
 
 void HistoryView::showCurrentPage(WebPage* page) {
-    std::cout << "\n=== PÁGINA ACTUAL ===\n";
+    std::cout << "\n=== PAGINA ACTUAL ===\n";
     if (page) {
         std::cout << "URL: " << page->url << "\n";
         std::cout << "Visitada: " << page->datetime << "\n";
     } else {
-        std::cout << "No hay página actual.\n";
+        std::cout << "No hay pagina actual.\n";
     }
     std::cout << "====================\n";
 }
@@ -61,9 +61,9 @@ void HistoryView::showSuccess(const std::string& success) {
 void HistoryView::showExecutionTimes(long long insertTime, long long removeTime, 
                                    long long getHistoryTime, long long navigateTime, 
                                    long long totalTime) {
-    std::cout << "\n=== TIEMPOS DE EJECUCIÓN ===\n";
-    std::cout << "Visitar página: " << insertTime << " microsegundos\n";
-    std::cout << "Eliminar página: " << removeTime << " microsegundos\n";
+    std::cout << "\n=== TIEMPOS DE EJECUCION ===\n";
+    std::cout << "Visitar pagina: " << insertTime << " microsegundos\n";
+    std::cout << "Eliminar pagina: " << removeTime << " microsegundos\n";
     std::cout << "Obtener historial: " << getHistoryTime << " microsegundos\n";
     std::cout << "Navegar: " << navigateTime << " microsegundos\n";
     std::cout << "Tiempo total: " << totalTime << " microsegundos\n";
@@ -103,7 +103,7 @@ void HistoryView::run(HistoryController& controller) {
                 case 1: {
                     std::string url = getUrl();
                     controller.visitPage(url);
-                    showSuccess("Página visitada y agregada al historial");
+                    showSuccess("Pagina visitada y agregada al historial");
                     break;
                 }
                 case 2: {
@@ -114,10 +114,10 @@ void HistoryView::run(HistoryController& controller) {
                 case 3: {
                     auto page = controller.navigateBackward();
                     if (page) {
-                        showSuccess("Navegando hacia atrás");
+                        showSuccess("Navegando hacia atras");
                         showCurrentPage(page);
                     } else {
-                        showError("No se puede navegar hacia atrás");
+                        showError("No se puede navegar hacia atras");
                     }
                     break;
                 }
@@ -134,9 +134,9 @@ void HistoryView::run(HistoryController& controller) {
                 case 5: {
                     std::string url = getUrl();
                     if (controller.removePage(url)) {
-                        showSuccess("Página eliminada del historial");
+                        showSuccess("Pagina eliminada del historial");
                     } else {
-                        showError("Página no encontrada en el historial");
+                        showError("Pagina no encontrada en el historial");
                     }
                     break;
                 }
@@ -149,7 +149,7 @@ void HistoryView::run(HistoryController& controller) {
                     showMessage("Saliendo del navegador...");
                     break;
                 default:
-                    showError("Opción inválida");
+                    showError("Opcion invalida");
                     break;
             }
         } catch (const std::exception& e) {
