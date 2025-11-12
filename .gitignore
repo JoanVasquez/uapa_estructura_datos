@@ -1,6 +1,5 @@
 # Archivos compilados C++
 *.o
-*.exe
 *.out
 *.app
 
