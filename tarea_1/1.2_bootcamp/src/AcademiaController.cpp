@@ -2,31 +2,30 @@
 
 using namespace std;
 
-// Constructor: Inyección de dependencia del servicio académico
-AcademiaController::AcademiaController(unique_ptr<AcademiaService> srv)
-    : service(move(srv)) {}
+// Constructor con inyección de dependencia
+AcademiaController::AcademiaController(AcademiaService* srv) : service(srv) {}
 
-// Registra nuevo estudiante en el sistema
-void AcademiaController::registrarEstudiante(const string& nombre, const string& matricula) {
-    service->registrarEstudiante(nombre, matricula);
+// Registra estudiante usando arreglo estático
+bool AcademiaController::registrarEstudiante(const string& nombre, const string& matricula) {
+    return service->registrarEstudiante(nombre, matricula);
 }
 
-// Registra las 5 calificaciones de un estudiante y calcula promedio
-void AcademiaController::registrarCalificaciones(const string& matricula, const array<double, 5>& notas) {
-    service->registrarCalificaciones(matricula, notas);
+// Registra calificaciones usando arreglo simple
+bool AcademiaController::registrarCalificaciones(const string& matricula, const double notas[5]) {
+    return service->registrarCalificaciones(matricula, notas);
 }
 
-// Obtiene estudiantes aprobados (promedio >= 70)
-vector<IEstudiante*> AcademiaController::obtenerAprobados() {
-    return service->obtenerAprobados();
+// Obtiene aprobados llenando arreglo resultado
+int AcademiaController::obtenerAprobados(IEstudiante* resultado[]) {
+    return service->obtenerAprobados(resultado);
 }
 
-// Obtiene estudiantes ordenados por promedio descendente
-vector<IEstudiante*> AcademiaController::obtenerOrdenadosPorPromedio() {
-    return service->obtenerOrdenadosPorPromedio();
+// Obtiene ordenados llenando arreglo resultado
+int AcademiaController::obtenerOrdenadosPorPromedio(IEstudiante* resultado[]) {
+    return service->obtenerOrdenadosPorPromedio(resultado);
 }
 
-// Obtiene todos los estudiantes registrados
-vector<IEstudiante*> AcademiaController::obtenerTodos() {
-    return service->obtenerTodos();
+// Obtiene todos llenando arreglo resultado
+int AcademiaController::obtenerTodos(IEstudiante* resultado[]) {
+    return service->obtenerTodos(resultado);
 }

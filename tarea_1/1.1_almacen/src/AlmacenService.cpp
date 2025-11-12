@@ -1,59 +1,52 @@
 #include "../include/AlmacenService.h"
 #include "../include/ComponenteNacional.h"
 #include "../include/ComponenteImportado.h"
-#include <memory>
-#include <stdexcept>
 
 using namespace std;
 
 // Constructor: Inyección de dependencia del repositorio
-AlmacenService::AlmacenService(unique_ptr<IAlmacenRepository> repo) 
-    : repository(move(repo)) {}
+AlmacenService::AlmacenService(IAlmacenRepository* repo) : repository(repo) {}
 
-// Registra componente nacional usando factory pattern
-void AlmacenService::registrarNacional(const string& codigo, const string& nombre,
+// Registra componente nacional creando objeto dinámicamente
+bool AlmacenService::registrarNacional(const string& codigo, const string& nombre,
                                       double precio, int cantidad, const string& empresa, int minimo) {
-    auto componente = make_unique<ComponenteNacional>(codigo, nombre, precio, cantidad, empresa, minimo);
-    repository->agregar(move(componente));
+    ComponenteNacional* componente = new ComponenteNacional(codigo, nombre, precio, cantidad, empresa, minimo);
+    return repository->agregar(componente);
 }
 
 // Registra componente importado con precio en USD
-void AlmacenService::registrarImportado(const string& codigo, const string& nombre,
+bool AlmacenService::registrarImportado(const string& codigo, const string& nombre,
                                        double precio, int cantidad, const string& pais, 
                                        double precioUSD, int minimo) {
-    auto componente = make_unique<ComponenteImportado>(codigo, nombre, precio, cantidad, pais, precioUSD, minimo);
-    repository->agregar(move(componente));
+    ComponenteImportado* componente = new ComponenteImportado(codigo, nombre, precio, cantidad, pais, precioUSD, minimo);
+    return repository->agregar(componente);
 }
 
-// Modifica cantidad en stock usando lambda para actualización
-void AlmacenService::modificarCantidad(const string& codigo, int cantidad) {
-    if (!repository->actualizar(codigo, [cantidad](IComponente* c) { c->setCantidad(cantidad); }))
-        throw runtime_error("Componente no encontrado: " + codigo);
+// Modifica cantidad en stock
+bool AlmacenService::modificarCantidad(const string& codigo, int cantidad) {
+    return repository->actualizar(codigo, cantidad);
 }
 
 // Actualiza umbral mínimo de inventario
-void AlmacenService::modificarNivelMinimo(const string& codigo, int nivel) {
-    if (!repository->actualizar(codigo, [nivel](IComponente* c) { c->setNivelMinimo(nivel); }))
-        throw runtime_error("Componente no encontrado: " + codigo);
+bool AlmacenService::modificarNivelMinimo(const string& codigo, int nivel) {
+    IComponente* componente = repository->buscar(codigo);
+    if (!componente) return false;
+    
+    componente->setNivelMinimo(nivel);
+    return true;
 }
 
 // Filtra componentes nacionales con precio superior al mínimo
-vector<IComponente*> AlmacenService::nacionalesPorPrecio(double minimo) {
-    return repository->filtrar([minimo](const IComponente* c) {
-        return c->getTipo() == "Nacional" && c->calcularPrecioVenta() > minimo;
-    });
+int AlmacenService::nacionalesPorPrecio(IComponente* resultado[], double minimo) {
+    return repository->filtrarNacionales(resultado, minimo);
 }
 
 // Filtra componentes importados por país de procedencia
-vector<IComponente*> AlmacenService::importadosPorPais(const string& pais) {
-    return repository->filtrar([&pais](const IComponente* c) {
-        if (c->getTipo() != "Importado") return false;
-        auto* importado = static_cast<const ComponenteImportado*>(c);
-        return importado->getPais() == pais;
-    });
+int AlmacenService::importadosPorPais(IComponente* resultado[], const string& pais) {
+    return repository->filtrarImportados(resultado, pais);
 }
 
 // Identifica componentes con stock por debajo del umbral mínimo
-vector<IComponente*> AlmacenService::componentesBajoStock() {
-    return repository->filtrar([](const IComponente* c) { return c->esBajoStock(); });
+int AlmacenService::componentesBajoStock(IComponente* resultado[]) {
+    return repository->filtrarBajoStock(resultado);
 }

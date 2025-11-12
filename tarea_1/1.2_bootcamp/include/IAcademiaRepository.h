@@ -1,26 +1,26 @@
 #pragma once
 #include "IEstudiante.h"
-#include <vector>
-#include <memory>
-#include <functional>
 
 using namespace std;
 
-// Interfaz del repositorio que define operaciones CRUD para estudiantes
-// Implementa el patrón Repository para abstraer el acceso a datos
+// Interfaz del repositorio que maneja arreglo unidimensional de estudiantes
+// Implementa manipulación directa de arreglos estáticos
 class IAcademiaRepository {
 public:
-    virtual ~IAcademiaRepository() = default; // Destructor virtual
+    static const int MAX_ESTUDIANTES = 50; // Tamaño máximo del arreglo
     
-    // Operaciones CRUD básicas
-    virtual void agregar(unique_ptr<IEstudiante> estudiante) = 0;  // Crear estudiante
-    virtual IEstudiante* buscar(const string& matricula) = 0;      // Buscar por matrícula
-    virtual vector<IEstudiante*> obtenerTodos() = 0;               // Obtener todos
+    virtual ~IAcademiaRepository() = default;
     
-    // Operaciones avanzadas con funciones lambda
-    virtual vector<IEstudiante*> filtrar(function<bool(const IEstudiante*)> pred) = 0;        // Filtrar con predicado
-    virtual void ordenar(function<bool(const IEstudiante*, const IEstudiante*)> comp) = 0;    // Ordenar con comparador
+    // Operaciones CRUD con arreglos estáticos
+    virtual bool agregar(IEstudiante* estudiante) = 0;
+    virtual IEstudiante* buscar(const string& matricula) = 0;
+    virtual int obtenerTodos(IEstudiante* resultado[]) = 0;
     
-    // Operaciones de consulta
-    virtual size_t obtenerCantidad() const = 0; // Obtener cantidad total
+    // Operaciones de filtrado con arreglos
+    virtual int filtrarAprobados(IEstudiante* resultado[]) = 0;
+    virtual void ordenarPorPromedio() = 0; // Ordenamiento burbuja
+    
+    // Consultas básicas
+    virtual int obtenerTotal() const = 0;
+    virtual IEstudiante** obtenerArreglo() = 0;
 };

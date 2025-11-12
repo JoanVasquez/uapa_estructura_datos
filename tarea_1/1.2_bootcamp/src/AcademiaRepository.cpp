@@ -1,61 +1,92 @@
 #include "../include/AcademiaRepository.h"
-#include <stdexcept>
-#include <algorithm>
+#include "../include/Estudiante.h"
 
 using namespace std;
 
-// Agrega un nuevo estudiante al repositorio con validación de duplicados
-void AcademiaRepository::agregar(unique_ptr<IEstudiante> estudiante) {
-    if (!estudiante) {
-        throw invalid_argument("Estudiante no puede ser nulo");
+// Constructor: inicializa arreglo estático de estudiantes
+AcademiaRepository::AcademiaRepository() : totalEstudiantes(0) {
+    // Inicializar arreglo con punteros nulos
+    for (int i = 0; i < MAX_ESTUDIANTES; i++) {
+        estudiantes[i] = nullptr;
     }
-    
-    // Verificar que no exista un estudiante con la misma matrícula
-    if (buscar(estudiante->getMatricula())) {
-        throw runtime_error("Matrícula duplicada: " + estudiante->getMatricula());
-    }
-    
-    // Agregar el estudiante al contenedor
-    estudiantes.push_back(move(estudiante));
 }
 
-// Busca un estudiante por su número de matrícula usando algoritmo STL
-IEstudiante* AcademiaRepository::buscar(const string& matricula) {
-    auto it = find_if(estudiantes.begin(), estudiantes.end(),
-        [&matricula](const auto& est) { return est->getMatricula() == matricula; });
-    
-    return (it != estudiantes.end()) ? it->get() : nullptr;
-}
-
-// Obtiene todos los estudiantes como punteros raw para consulta
-vector<IEstudiante*> AcademiaRepository::obtenerTodos() {
-    vector<IEstudiante*> resultado;
-    resultado.reserve(estudiantes.size()); // Reservar memoria para eficiencia
-    
-    // Convertir unique_ptr a raw pointer para consulta
-    for (const auto& est : estudiantes) {
-        resultado.push_back(est.get());
+// Destructor: libera memoria de estudiantes
+AcademiaRepository::~AcademiaRepository() {
+    for (int i = 0; i < totalEstudiantes; i++) {
+        delete estudiantes[i];
     }
-    
-    return resultado;
 }
 
-// Filtra estudiantes usando un predicado (función lambda)
-vector<IEstudiante*> AcademiaRepository::filtrar(function<bool(const IEstudiante*)> pred) {
-    vector<IEstudiante*> resultado;
-    
-    // Aplicar el predicado a cada estudiante
-    for (const auto& est : estudiantes) {
-        if (pred(est.get())) {
-            resultado.push_back(est.get());
+// Busca índice de estudiante por matrícula usando búsqueda lineal
+int AcademiaRepository::buscarIndice(const string& matricula) {
+    for (int i = 0; i < totalEstudiantes; i++) {
+        if (estudiantes[i] && estudiantes[i]->getMatricula() == matricula) {
+            return i;
         }
     }
-    
-    return resultado;
+    return -1; // No encontrado
 }
 
-// Ordena los estudiantes usando un comparador personalizado
-void AcademiaRepository::ordenar(function<bool(const IEstudiante*, const IEstudiante*)> comp) {
-    sort(estudiantes.begin(), estudiantes.end(),
-        [&comp](const auto& a, const auto& b) { return comp(a.get(), b.get()); });
+// Intercambia dos elementos del arreglo para algoritmos de ordenamiento
+void AcademiaRepository::intercambiar(int i, int j) {
+    IEstudiante* temp = estudiantes[i];
+    estudiantes[i] = estudiantes[j];
+    estudiantes[j] = temp;
+}
+
+// Agrega estudiante al arreglo estático con validación
+bool AcademiaRepository::agregar(IEstudiante* estudiante) {
+    if (!estudiante || totalEstudiantes >= MAX_ESTUDIANTES) {
+        return false;
+    }
+    
+    // Verificar duplicados usando búsqueda lineal
+    if (buscarIndice(estudiante->getMatricula()) != -1) {
+        return false;
+    }
+    
+    // Agregar al final del arreglo
+    estudiantes[totalEstudiantes] = estudiante;
+    totalEstudiantes++;
+    return true;
+}
+
+// Busca estudiante por matrícula en arreglo estático
+IEstudiante* AcademiaRepository::buscar(const string& matricula) {
+    int indice = buscarIndice(matricula);
+    return (indice != -1) ? estudiantes[indice] : nullptr;
+}
+
+// Copia todos los estudiantes a arreglo resultado
+int AcademiaRepository::obtenerTodos(IEstudiante* resultado[]) {
+    for (int i = 0; i < totalEstudiantes; i++) {
+        resultado[i] = estudiantes[i];
+    }
+    return totalEstudiantes;
+}
+
+// Filtra estudiantes aprobados usando estructura repetitiva
+int AcademiaRepository::filtrarAprobados(IEstudiante* resultado[]) {
+    int count = 0;
+    for (int i = 0; i < totalEstudiantes; i++) {
+        if (estudiantes[i] && estudiantes[i]->estaAprobado()) {
+            resultado[count] = estudiantes[i];
+            count++;
+        }
+    }
+    return count;
+}
+
+// Ordena estudiantes por promedio usando algoritmo burbuja
+void AcademiaRepository::ordenarPorPromedio() {
+    // Algoritmo de ordenamiento burbuja (descendente por promedio)
+    for (int i = 0; i < totalEstudiantes - 1; i++) {
+        for (int j = 0; j < totalEstudiantes - i - 1; j++) {
+            // Condicional anidada para comparar promedios
+            if (estudiantes[j]->getPromedio() < estudiantes[j + 1]->getPromedio()) {
+                intercambiar(j, j + 1);
+            }
+        }
+    }
 }

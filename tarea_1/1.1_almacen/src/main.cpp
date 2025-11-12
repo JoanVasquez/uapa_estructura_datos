@@ -1,4 +1,3 @@
-#include "../include/AlmacenController.h"
 #include "../include/AlmacenService.h"
 #include "../include/AlmacenRepository.h"
 #include <iomanip>
@@ -7,14 +6,24 @@
 using namespace std;
 
 // Clase que maneja la interfaz de usuario para el sistema de almacén
-// Implementa el patrón MVC como controlador
+// Usa arreglos estáticos para cumplir con criterios de evaluación
 class AlmacenUI {
 private:
-  AlmacenController controller; // Controlador para operaciones del almacén
+  AlmacenService* service; // Servicio para operaciones del almacén
+  AlmacenRepository* repository; // Repositorio con arreglo estático
 
 public:
-  // Constructor que inicializa el controlador con servicio y repositorio
-  AlmacenUI() : controller(make_unique<AlmacenService>(make_unique<AlmacenRepository>())) {}
+  // Constructor que inicializa servicio y repositorio
+  AlmacenUI() {
+    repository = new AlmacenRepository();
+    service = new AlmacenService(repository);
+  }
+  
+  // Destructor para liberar memoria
+  ~AlmacenUI() {
+    delete service;
+    delete repository;
+  }
 
   // Método principal que ejecuta el bucle de la interfaz de usuario
   void ejecutar() {
@@ -84,7 +93,6 @@ private:
     int cantidad, minimo;
 
     cin.ignore(); // Limpiar buffer
-    // Solicitar datos del componente nacional
     cout << "Código: ";
     getline(cin, codigo);
     cout << "Nombre: ";
@@ -93,15 +101,17 @@ private:
     cin >> precio;
     cout << "Cantidad: ";
     cin >> cantidad;
-    cin.ignore(); // Limpiar buffer después de números
+    cin.ignore();
     cout << "Empresa: ";
     getline(cin, empresa);
     cout << "Nivel mínimo: ";
     cin >> minimo;
 
-    // Crear y almacenar el componente usando el servicio
-    controller.registrarComponenteNacional(codigo, nombre, precio, cantidad, empresa, minimo);
-    cout << "Componente registrado exitosamente\n";
+    if (service->registrarNacional(codigo, nombre, precio, cantidad, empresa, minimo)) {
+      cout << "Componente registrado exitosamente\n";
+    } else {
+      cout << "Error: No se pudo registrar el componente\n";
+    }
   }
 
   // Registra un nuevo componente importado con precio en USD
@@ -110,8 +120,7 @@ private:
     double precio, precioUSD;
     int cantidad, minimo;
 
-    cin.ignore(); // Limpiar buffer
-    // Solicitar datos del componente importado
+    cin.ignore();
     cout << "Código: ";
     getline(cin, codigo);
     cout << "Nombre: ";
@@ -120,7 +129,7 @@ private:
     cin >> precio;
     cout << "Cantidad: ";
     cin >> cantidad;
-    cin.ignore(); // Limpiar buffer después de números
+    cin.ignore();
     cout << "País: ";
     getline(cin, pais);
     cout << "Precio USD: ";
@@ -128,76 +137,97 @@ private:
     cout << "Nivel mínimo: ";
     cin >> minimo;
 
-    // Crear y almacenar el componente importado usando el servicio
-    controller.registrarComponenteImportado(codigo, nombre, precio, cantidad, pais, precioUSD, minimo);
-    cout << "Componente registrado exitosamente\n";
+    if (service->registrarImportado(codigo, nombre, precio, cantidad, pais, precioUSD, minimo)) {
+      cout << "Componente registrado exitosamente\n";
+    } else {
+      cout << "Error: No se pudo registrar el componente\n";
+    }
   }
 
-  // Modifica la cantidad en stock de un componente específico
+  // Modifica la cantidad en stock usando arreglos estáticos
   void modificarCantidad() {
     string codigo;
     int cantidad;
-    cin.ignore(); // Limpiar buffer
+    cin.ignore();
     cout << "Código: ";
     getline(cin, codigo);
     cout << "Nueva cantidad: ";
     cin >> cantidad;
-    controller.modificarCantidad(codigo, cantidad);
-    cout << "Cantidad actualizada\n";
+    
+    if (service->modificarCantidad(codigo, cantidad)) {
+      cout << "Cantidad actualizada\n";
+    } else {
+      cout << "Error: Componente no encontrado\n";
+    }
   }
 
-  // Modifica el nivel mínimo de inventario de un componente
+  // Modifica el nivel mínimo usando manipulación directa de arreglos
   void modificarNivelMinimo() {
     string codigo;
     int nivel;
-    cin.ignore(); // Limpiar buffer
+    cin.ignore();
     cout << "Código: ";
     getline(cin, codigo);
     cout << "Nuevo nivel mínimo: ";
     cin >> nivel;
-    controller.modificarNivelMinimo(codigo, nivel);
-    cout << "Nivel mínimo actualizado\n";
+    
+    if (service->modificarNivelMinimo(codigo, nivel)) {
+      cout << "Nivel mínimo actualizado\n";
+    } else {
+      cout << "Error: Componente no encontrado\n";
+    }
   }
 
-  // Lista componentes nacionales que superan un precio mínimo
+  // Lista componentes nacionales usando arreglo estático
   void listarNacionalesPorPrecio() {
     double minimo;
     cout << "Precio mínimo: ";
     cin >> minimo;
-    auto componentes = controller.obtenerNacionalesPorPrecio(minimo);
-    mostrarComponentes(componentes);
+    
+    IComponente* resultado[IAlmacenRepository::MAX_COMPONENTES];
+    int total = service->nacionalesPorPrecio(resultado, minimo);
+    
+    cout << "\n=== COMPONENTES NACIONALES ===\n";
+    mostrarComponentes(resultado, total);
   }
 
-  // Lista componentes importados de un país específico
+  // Lista componentes importados usando arreglo estático
   void listarImportadosPorPais() {
     string pais;
-    cin.ignore(); // Limpiar buffer
+    cin.ignore();
     cout << "País: ";
     getline(cin, pais);
-    auto componentes = controller.obtenerImportadosPorPais(pais);
-    mostrarComponentes(componentes);
+    
+    IComponente* resultado[IAlmacenRepository::MAX_COMPONENTES];
+    int total = service->importadosPorPais(resultado, pais);
+    
+    cout << "\n=== COMPONENTES IMPORTADOS ===\n";
+    mostrarComponentes(resultado, total);
   }
 
-  // Lista todos los componentes que están bajo el nivel mínimo de stock
+  // Lista componentes bajo stock usando arreglo estático
   void listarBajoStock() {
-    auto componentes = controller.obtenerComponentesBajoStock();
+    IComponente* resultado[IAlmacenRepository::MAX_COMPONENTES];
+    int total = service->componentesBajoStock(resultado);
+    
     cout << "\n=== COMPONENTES BAJO STOCK ===\n";
-    mostrarComponentes(componentes);
+    mostrarComponentes(resultado, total);
   }
 
-  // Muestra una lista de componentes en formato tabular
-  void mostrarComponentes(const vector<IComponente *> &componentes) {
-    if (componentes.empty()) {
+  // Muestra arreglo de componentes con estructuras repetitivas
+  void mostrarComponentes(IComponente* componentes[], int total) {
+    if (total == 0) {
       cout << "No se encontraron componentes\n";
       return;
     }
 
-    // Configurar formato de salida para precios
     cout << fixed << setprecision(2);
-    for (const auto *c : componentes) {
+    // Usar bucle for tradicional para manipular arreglo estático
+    for (int i = 0; i < total; i++) {
+      IComponente* c = componentes[i];
       cout << c->getCodigo() << " | " << c->getNombre() << " | $"
-                << c->calcularPrecioVenta() << " | Stock: " << c->getCantidad()
-                << " | " << c->getTipo() << endl;
+           << c->calcularPrecioVenta() << " | Stock: " << c->getCantidad()
+           << " | " << c->getTipo() << endl;
     }
   }
 };

@@ -27,8 +27,8 @@ public:
     void modificarCantidad(const string& codigo, int cantidad);
     void modificarNivelMinimo(const string& codigo, int nivel);
     
-    // Operaciones de consulta con filtros
-    vector<IComponente*> obtenerNacionalesPorPrecio(double minimo);
-    vector<IComponente*> obtenerImportadosPorPais(const string& pais);
-    vector<IComponente*> obtenerComponentesBajoStock();
+    // Operaciones de consulta con arreglos estáticos
+    int obtenerNacionalesPorPrecio(IComponente* resultado[], double minimo);
+    int obtenerImportadosPorPais(IComponente* resultado[], const string& pais);
+    int obtenerComponentesBajoStock(IComponente* resultado[]);
 };

@@ -10,11 +10,22 @@ using namespace std;
 // Implementa el patrón MVC como controlador
 class AcademiaUI {
 private:
-    AcademiaController controller; // Controlador para operaciones académicas
+    AcademiaController* controller;
+    AcademiaService* service;
+    AcademiaRepository* repository;
 
 public:
-    // Constructor que inicializa el controlador con servicio y repositorio
-    AcademiaUI() : controller(make_unique<AcademiaService>(make_unique<AcademiaRepository>())) {}
+    AcademiaUI() {
+        repository = new AcademiaRepository();
+        service = new AcademiaService(repository);
+        controller = new AcademiaController(service);
+    }
+    
+    ~AcademiaUI() {
+        delete controller;
+        delete service;
+        delete repository;
+    }
 
     // Método principal que ejecuta el bucle de la interfaz de usuario
     void ejecutar() {
@@ -64,61 +75,69 @@ private:
         cout << "Matrícula: ";
         getline(cin, matricula);
         
-        controller.registrarEstudiante(nombre, matricula);
-        cout << "Estudiante registrado exitosamente\n";
+        if (controller->registrarEstudiante(nombre, matricula)) {
+            cout << "Estudiante registrado exitosamente\n";
+        } else {
+            cout << "Error: No se pudo registrar el estudiante\n";
+        }
     }
 
-    // Registra las 5 calificaciones de un estudiante
+    // Registra las 5 calificaciones usando arreglo simple
     void registrarCalificaciones() {
         string matricula;
-        array<double, 5> notas;
+        double notas[5];
         
-        cin.ignore(); // Limpiar buffer
+        cin.ignore();
         cout << "Matrícula: ";
         getline(cin, matricula);
         
-        // Solicitar las 5 calificaciones
         cout << "Ingrese 5 calificaciones:\n";
         for (int i = 0; i < 5; ++i) {
             cout << "Calificación " << (i + 1) << ": ";
             cin >> notas[i];
         }
         
-        controller.registrarCalificaciones(matricula, notas);
-        cout << "Calificaciones registradas exitosamente\n";
+        if (controller->registrarCalificaciones(matricula, notas)) {
+            cout << "Calificaciones registradas exitosamente\n";
+        } else {
+            cout << "Error: Estudiante no encontrado\n";
+        }
     }
 
-    // Muestra solo los estudiantes aprobados (promedio >= 70)
+    // Muestra aprobados usando arreglo estático
     void mostrarAprobados() {
-        auto aprobados = controller.obtenerAprobados();
+        IEstudiante* aprobados[IAcademiaRepository::MAX_ESTUDIANTES];
+        int total = controller->obtenerAprobados(aprobados);
         cout << "\n=== ESTUDIANTES APROBADOS ===\n";
-        mostrarEstudiantes(aprobados);
+        mostrarEstudiantes(aprobados, total);
     }
 
-    // Muestra estudiantes ordenados por promedio de mayor a menor
+    // Muestra ordenados usando arreglo estático
     void mostrarOrdenados() {
-        auto ordenados = controller.obtenerOrdenadosPorPromedio();
+        IEstudiante* ordenados[IAcademiaRepository::MAX_ESTUDIANTES];
+        int total = controller->obtenerOrdenadosPorPromedio(ordenados);
         cout << "\n=== ESTUDIANTES ORDENADOS POR PROMEDIO ===\n";
-        mostrarEstudiantes(ordenados);
+        mostrarEstudiantes(ordenados, total);
     }
 
-    // Muestra todos los estudiantes registrados
+    // Muestra todos usando arreglo estático
     void mostrarTodos() {
-        auto todos = controller.obtenerTodos();
+        IEstudiante* todos[IAcademiaRepository::MAX_ESTUDIANTES];
+        int total = controller->obtenerTodos(todos);
         cout << "\n=== TODOS LOS ESTUDIANTES ===\n";
-        mostrarEstudiantes(todos);
+        mostrarEstudiantes(todos, total);
     }
 
-    // Método auxiliar que muestra una lista de estudiantes en formato tabular
-    void mostrarEstudiantes(const vector<IEstudiante*>& estudiantes) {
-        if (estudiantes.empty()) {
+    // Muestra arreglo de estudiantes con bucle tradicional
+    void mostrarEstudiantes(IEstudiante* estudiantes[], int total) {
+        if (total == 0) {
             cout << "No hay estudiantes para mostrar\n";
             return;
         }
         
-        // Configurar formato de salida para promedios
         cout << fixed << setprecision(2);
-        for (const auto* est : estudiantes) {
+        for (int i = 0; i < total; i++) {
+            IEstudiante* est = estudiantes[i];
             cout << est->getMatricula() << " | " 
                       << est->getNombre() << " | "
                       << "Promedio: " << est->getPromedio() << " | "

@@ -1,124 +1,113 @@
-#include "../include/Almacen.h"
-#include <stdexcept>
-#include <iostream>
-#include <iomanip>
-#include <algorithm>
+#include "Almacen.hpp"
 
-Almacen::Almacen() : umbralMinimo(UMBRAL_DEFAULT) {
-    for (auto& almacen : stock) {
-        almacen.fill(0);
-    }
-}
-
-void Almacen::validarIndices(int almacen, int producto) const {
-    if (almacen < 0 || almacen >= NUM_ALMACENES) {
-        throw std::out_of_range("Almacén debe estar entre 0 y " + std::to_string(NUM_ALMACENES - 1));
-    }
-    if (producto < 0 || producto >= NUM_PRODUCTOS) {
-        throw std::out_of_range("Producto debe estar entre 0 y " + std::to_string(NUM_PRODUCTOS - 1));
-    }
-}
-
-void Almacen::validarAlmacen(int almacen) const {
-    if (almacen < 0 || almacen >= NUM_ALMACENES) {
-        throw std::out_of_range("Almacén debe estar entre 0 y " + std::to_string(NUM_ALMACENES - 1));
-    }
-}
-
-void Almacen::registrarStock(int almacen, int producto, int cantidad) {
-    validarIndices(almacen, producto);
-    if (cantidad < 0) {
-        throw std::invalid_argument("La cantidad no puede ser negativa");
-    }
-    stock[almacen][producto] = cantidad;
-}
-
-int Almacen::obtenerStock(int almacen, int producto) const {
-    validarIndices(almacen, producto);
-    return stock[almacen][producto];
-}
-
-std::vector<int> Almacen::detectarAgotados(int almacen) const {
-    validarAlmacen(almacen);
-    std::vector<int> agotados;
-    
-    for (int producto = 0; producto < NUM_PRODUCTOS; ++producto) {
-        if (stock[almacen][producto] == 0) {
-            agotados.push_back(producto);
+Almacen::Almacen() : umbralMinimo(10) {
+    // Inicializamos la matriz bidimensional con ceros usando bucles anidados
+    for (int i = 0; i < NUM_ALMACENES; ++i) {
+        for (int j = 0; j < NUM_PRODUCTOS; ++j) {
+            stock[i][j] = 0;
         }
     }
-    
-    return agotados;
 }
 
-int Almacen::almacenMenorStock() const {
-    int menorStock = calcularStockTotal(0);
-    int almacenMenor = 0;
-    
-    for (int almacen = 1; almacen < NUM_ALMACENES; ++almacen) {
-        int stockActual = calcularStockTotal(almacen);
-        if (stockActual < menorStock) {
-            menorStock = stockActual;
-            almacenMenor = almacen;
+void Almacen::registrarExistencias() {
+    std::cout << "\n=== Registro de Existencias ===\n";
+    for (int i = 0; i < NUM_ALMACENES; ++i) {
+        std::cout << "\n>> Almacén " << (i + 1) << ":\n";
+        for (int j = 0; j < NUM_PRODUCTOS; ++j) {
+            int cantidad;
+            std::cout << "   Producto " << (j + 1) << " cantidad: ";
+            if (!(std::cin >> cantidad) || cantidad < 0) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cerr << "Entrada inválida. Se establecerá en 0.\n";
+                cantidad = 0;
+            }
+            stock[i][j] = cantidad;
         }
     }
-    
-    return almacenMenor;
 }
 
-std::vector<AlertaStock> Almacen::generarAlertas() const {
-    std::vector<AlertaStock> alertas;
-    
-    for (int almacen = 0; almacen < NUM_ALMACENES; ++almacen) {
-        for (int producto = 0; producto < NUM_PRODUCTOS; ++producto) {
-            int stockActual = stock[almacen][producto];
-            if (stockActual > 0 && stockActual < umbralMinimo) {
-                alertas.push_back({almacen, producto, stockActual, umbralMinimo});
+void Almacen::detectarAgotados() const {
+    std::cout << "\n=== Productos Agotados ===\n";
+    bool agotado = false;
+
+    for (int i = 0; i < NUM_ALMACENES; ++i) {
+        for (int j = 0; j < NUM_PRODUCTOS; ++j) {
+            if (stock[i][j] == 0) {
+                std::cout << "Almacén " << (i + 1)
+                          << " - Producto " << (j + 1)
+                          << " está agotado.\n";
+                agotado = true;
             }
         }
     }
-    
-    return alertas;
+
+    if (!agotado)
+        std::cout << "No hay productos agotados.\n";
 }
 
-void Almacen::configurarUmbral(int umbral) {
-    if (umbral < 0) {
-        throw std::invalid_argument("El umbral no puede ser negativo");
-    }
-    umbralMinimo = umbral;
-}
+void Almacen::mostrarMenorStock() const {
+    std::cout << "\n=== Almacén con Menor Stock ===\n";
+    int menor = std::numeric_limits<int>::max();
+    int indice = -1;
 
-int Almacen::calcularStockTotal(int almacen) const {
-    validarAlmacen(almacen);
-    int total = 0;
-    for (int producto = 0; producto < NUM_PRODUCTOS; ++producto) {
-        total += stock[almacen][producto];
-    }
-    return total;
-}
-
-void Almacen::mostrarStock() const {
-    std::cout << "\n=== INVENTARIO COMPLETO ===\n";
-    std::cout << "Alm\\Prod";
-    for (int p = 0; p < NUM_PRODUCTOS; ++p) {
-        std::cout << std::setw(4) << "P" << p;
-    }
-    std::cout << std::setw(8) << "Total\n";
-    
-    for (int a = 0; a < NUM_ALMACENES; ++a) {
-        std::cout << "A" << a << "      ";
-        for (int p = 0; p < NUM_PRODUCTOS; ++p) {
-            std::cout << std::setw(6) << stock[a][p];
+    for (int i = 0; i < NUM_ALMACENES; ++i) {
+        int total = 0;
+        // Sumar manualmente todos los productos del almacén i
+        for (int j = 0; j < NUM_PRODUCTOS; ++j) {
+            total += stock[i][j];
         }
-        std::cout << std::setw(8) << calcularStockTotal(a) << "\n";
+        if (total < menor) {
+            menor = total;
+            indice = i;
+        }
     }
+
+    if (indice >= 0)
+        std::cout << "El Almacén " << (indice + 1)
+                  << " tiene el menor stock total con " << menor << " unidades.\n";
 }
 
-void Almacen::mostrarStockAlmacen(int almacen) const {
-    validarAlmacen(almacen);
-    std::cout << "\n=== ALMACÉN " << almacen << " ===\n";
-    for (int p = 0; p < NUM_PRODUCTOS; ++p) {
-        std::cout << "Producto " << p << ": " << stock[almacen][p] << "\n";
+void Almacen::emitirAlertas() const {
+    std::cout << "\n=== Alertas de Stock Bajo (umbral: " << umbralMinimo << ") ===\n";
+    bool alerta = false;
+
+    for (int i = 0; i < NUM_ALMACENES; ++i) {
+        for (int j = 0; j < NUM_PRODUCTOS; ++j) {
+            if (stock[i][j] > 0 && stock[i][j] < umbralMinimo) {
+                std::cout << "Almacén " << (i + 1)
+                          << " - Producto " << (j + 1)
+                          << " tiene stock bajo: " << stock[i][j] << "\n";
+                alerta = true;
+            }
+        }
     }
-    std::cout << "Total: " << calcularStockTotal(almacen) << "\n";
+
+    if (!alerta)
+        std::cout << "Todos los productos están por encima del umbral.\n";
+}
+
+void Almacen::configurarUmbral() {
+    std::cout << "\nIngrese nuevo umbral mínimo: ";
+    int nuevo;
+    if (!(std::cin >> nuevo) || nuevo <= 0) {
+        std::cerr << "Umbral inválido. Se mantiene el valor anterior: " << umbralMinimo << "\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return;
+    }
+    umbralMinimo = nuevo;
+    std::cout << "Umbral actualizado a " << umbralMinimo << "\n";
+}
+
+void Almacen::mostrarStockGeneral() const {
+    std::cout << "\n=== Resumen de Stock por Almacén ===\n";
+    for (int i = 0; i < NUM_ALMACENES; ++i) {
+        int total = 0;
+        // Calcular total manualmente usando bucle anidado
+        for (int j = 0; j < NUM_PRODUCTOS; ++j) {
+            total += stock[i][j];
+        }
+        std::cout << "Almacén " << (i + 1) << " → " << total << " unidades totales.\n";
+    }
 }

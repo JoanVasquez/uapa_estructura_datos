@@ -1,25 +1,22 @@
 #pragma once
 #include "IAcademiaRepository.h"
-#include <memory>
 
 using namespace std;
 
-// Servicio de negocio que encapsula la lógica del sistema académico
-// Implementa el patrón Service Layer para separar lógica de negocio
+// Servicio de negocio que maneja arreglos estáticos de estudiantes
 class AcademiaService {
 private:
-    unique_ptr<IAcademiaRepository> repository; // Repositorio inyectado por dependencia
+    IAcademiaRepository* repository; // Repositorio inyectado
 
 public:
-    // Constructor que recibe el repositorio por inyección de dependencias
-    explicit AcademiaService(unique_ptr<IAcademiaRepository> repo);
+    explicit AcademiaService(IAcademiaRepository* repo);
     
-    // Operaciones de registro y actualización
-    void registrarEstudiante(const string& nombre, const string& matricula);           // Crear nuevo estudiante
-    void registrarCalificaciones(const string& matricula, const array<double, 5>& notas); // Asignar calificaciones
+    // Operaciones de registro
+    bool registrarEstudiante(const string& nombre, const string& matricula);
+    bool registrarCalificaciones(const string& matricula, const double notas[5]);
     
-    // Consultas de negocio con filtros específicos
-    vector<IEstudiante*> obtenerAprobados();              // Estudiantes con promedio >= 70
-    vector<IEstudiante*> obtenerOrdenadosPorPromedio();   // Ordenados por promedio descendente
-    vector<IEstudiante*> obtenerTodos();                  // Todos los estudiantes
+    // Consultas que llenan arreglos estáticos
+    int obtenerAprobados(IEstudiante* resultado[]);
+    int obtenerOrdenadosPorPromedio(IEstudiante* resultado[]);
+    int obtenerTodos(IEstudiante* resultado[]);
 };

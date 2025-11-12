@@ -3,22 +3,31 @@
 
 using namespace std;
 
-// Implementación concreta del repositorio usando un vector en memoria
-// Almacena estudiantes usando smart pointers para manejo automático de memoria
+// Implementación del repositorio usando arreglo unidimensional estático
+// Maneja estudiantes con manipulación directa de arreglos
 class AcademiaRepository : public IAcademiaRepository {
 private:
-    vector<unique_ptr<IEstudiante>> estudiantes; // Contenedor de estudiantes con RAII
+    IEstudiante* estudiantes[MAX_ESTUDIANTES]; // Arreglo estático de estudiantes
+    int totalEstudiantes; // Contador de estudiantes actuales
+    
+    // Funciones auxiliares para manipulación de arreglos
+    int buscarIndice(const string& matricula);
+    void intercambiar(int i, int j); // Para algoritmos de ordenamiento
 
 public:
-    // Implementación de operaciones CRUD
-    void agregar(unique_ptr<IEstudiante> estudiante) override;     // Agregar nuevo estudiante
-    IEstudiante* buscar(const string& matricula) override;         // Buscar por matrícula
-    vector<IEstudiante*> obtenerTodos() override;                  // Obtener todos los estudiantes
+    AcademiaRepository();
+    ~AcademiaRepository();
     
-    // Operaciones avanzadas con algoritmos STL
-    vector<IEstudiante*> filtrar(function<bool(const IEstudiante*)> pred) override;        // Filtrar con predicado
-    void ordenar(function<bool(const IEstudiante*, const IEstudiante*)> comp) override;    // Ordenar con comparador
+    // Implementación con arreglos estáticos
+    bool agregar(IEstudiante* estudiante) override;
+    IEstudiante* buscar(const string& matricula) override;
+    int obtenerTodos(IEstudiante* resultado[]) override;
     
-    // Consulta de tamaño inline
-    size_t obtenerCantidad() const override { return estudiantes.size(); }
+    // Operaciones de filtrado y ordenamiento con arreglos
+    int filtrarAprobados(IEstudiante* resultado[]) override;
+    void ordenarPorPromedio() override; // Algoritmo burbuja
+    
+    // Consultas básicas
+    int obtenerTotal() const override { return totalEstudiantes; }
+    IEstudiante** obtenerArreglo() override { return estudiantes; }
 };

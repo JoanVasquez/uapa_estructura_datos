@@ -35,19 +35,17 @@ void AlmacenController::modificarNivelMinimo(const string &codigo,
   service->modificarNivelMinimo(codigo, nivel);
 }
 
-// Obtiene componentes nacionales con precio superior al mínimo
-vector<IComponente *>
-AlmacenController::obtenerNacionalesPorPrecio(double minimo) {
-  return service->nacionalesPorPrecio(minimo);
+// Obtiene componentes nacionales usando arreglo estático
+int AlmacenController::obtenerNacionalesPorPrecio(IComponente* resultado[], double minimo) {
+  return service->nacionalesPorPrecio(resultado, minimo);
 }
 
-// Filtra componentes importados por país de procedencia
-vector<IComponente *>
-AlmacenController::obtenerImportadosPorPais(const string &pais) {
-  return service->importadosPorPais(pais);
+// Filtra componentes importados usando arreglo estático
+int AlmacenController::obtenerImportadosPorPais(IComponente* resultado[], const string &pais) {
+  return service->importadosPorPais(resultado, pais);
 }
 
-// Identifica componentes con stock por debajo del umbral
-vector<IComponente *> AlmacenController::obtenerComponentesBajoStock() {
-  return service->componentesBajoStock();
+// Identifica componentes con stock bajo usando arreglo estático
+int AlmacenController::obtenerComponentesBajoStock(IComponente* resultado[]) {
+  return service->componentesBajoStock(resultado);
 }

@@ -17,6 +17,6 @@ public:
     virtual string getEstado() const = 0;     // Estado académico (Aprobado/Reprobado)
     
     // Métodos de operación puros
-    virtual void registrarCalificaciones(const array<double, 5>& notas) = 0; // Registrar las 5 calificaciones
+    virtual void registrarCalificaciones(const double notas[5]) = 0; // Registrar las 5 calificaciones
     virtual bool estaAprobado() const = 0;    // Verificar si el promedio es >= 70
 };

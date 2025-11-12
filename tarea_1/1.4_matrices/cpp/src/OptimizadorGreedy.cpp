@@ -1,60 +1,106 @@
 #include "../include/OptimizadorGreedy.h"
-#include <stdexcept>
-#include <algorithm>
 #include <climits>
+#include <stdexcept>
 
-OptimizadorGreedy::OptimizadorGreedy() : costoTotal(0) {
-    for (auto& almacen : stock) almacen.fill(0);
-    for (auto& fila : distancias) fila.fill(1);
-    umbrales.fill(5);
+using namespace std;
+
+// Constructor: inicializa matrices bidimensionales estáticas
+OptimizadorGreedy::OptimizadorGreedy() : totalMovimientos(0), costoTotal(0) {
+    inicializarMatrices();
 }
 
+// Inicializa todas las matrices con valores por defecto
+void OptimizadorGreedy::inicializarMatrices() {
+    // Inicializar matriz de stock con ceros usando bucles anidados
+    for (int i = 0; i < NUM_ALMACENES; i++) {
+        for (int j = 0; j < NUM_PRODUCTOS; j++) {
+            stock[i][j] = 0;
+        }
+    }
+    
+    // Inicializar matriz de distancias con unos
+    for (int i = 0; i < NUM_ALMACENES; i++) {
+        for (int j = 0; j < NUM_ALMACENES; j++) {
+            distancias[i][j] = (i == j) ? 0 : 1;
+        }
+    }
+    
+    // Inicializar arreglo de umbrales
+    for (int i = 0; i < NUM_PRODUCTOS; i++) {
+        umbrales[i] = 5;
+    }
+}
+
+// Valida matriz de distancias usando bucles anidados
 void OptimizadorGreedy::validarDatos() const {
     for (int i = 0; i < NUM_ALMACENES; ++i) {
         for (int j = 0; j < NUM_ALMACENES; ++j) {
             if (distancias[i][j] < 0) {
-                throw std::invalid_argument("Las distancias no pueden ser negativas");
+                throw invalid_argument("Las distancias no pueden ser negativas");
             }
         }
     }
 }
 
-void OptimizadorGreedy::configurarStock(const std::array<std::array<int, 15>, 6>& nuevoStock) {
-    stock = nuevoStock;
+// Copia matriz de stock usando bucles anidados
+void OptimizadorGreedy::configurarStock(int nuevoStock[NUM_ALMACENES][NUM_PRODUCTOS]) {
+    for (int i = 0; i < NUM_ALMACENES; i++) {
+        for (int j = 0; j < NUM_PRODUCTOS; j++) {
+            stock[i][j] = nuevoStock[i][j];
+        }
+    }
 }
 
-void OptimizadorGreedy::configurarDistancias(const std::array<std::array<int, 6>, 6>& dist) {
-    distancias = dist;
+// Copia matriz de distancias usando bucles anidados
+void OptimizadorGreedy::configurarDistancias(int dist[NUM_ALMACENES][NUM_ALMACENES]) {
+    for (int i = 0; i < NUM_ALMACENES; i++) {
+        for (int j = 0; j < NUM_ALMACENES; j++) {
+            distancias[i][j] = dist[i][j];
+        }
+    }
     validarDatos();
 }
 
-void OptimizadorGreedy::configurarUmbrales(const std::array<int, 15>& nuevosUmbrales) {
-    umbrales = nuevosUmbrales;
+// Copia arreglo de umbrales usando bucle simple
+void OptimizadorGreedy::configurarUmbrales(int nuevosUmbrales[NUM_PRODUCTOS]) {
+    for (int i = 0; i < NUM_PRODUCTOS; i++) {
+        umbrales[i] = nuevosUmbrales[i];
+    }
 }
 
-std::vector<Movimiento> OptimizadorGreedy::optimizar() {
-    movimientos.clear();
+// Algoritmo greedy usando estructuras repetitivas anidadas
+int OptimizadorGreedy::optimizar(Movimiento resultado[]) {
+    totalMovimientos = 0;
     costoTotal = 0;
     
+    // Bucles anidados para recorrer productos y almacenes
     for (int producto = 0; producto < NUM_PRODUCTOS; ++producto) {
         for (int destino = 0; destino < NUM_ALMACENES; ++destino) {
             int faltante = umbrales[producto] - stock[destino][producto];
             
-            while (faltante > 0) {
+            // Estructura repetitiva while con condicionales anidadas
+            while (faltante > 0 && totalMovimientos < MAX_MOVIMIENTOS) {
                 int origen = encontrarMejorOrigen(producto, destino);
                 if (origen == -1) break;
                 
                 int disponible = stock[origen][producto] - umbrales[producto];
                 if (disponible <= 0) break;
                 
-                int cantidad = std::min(faltante, disponible);
-                realizarMovimiento(producto, origen, destino, cantidad);
+                // Calcular cantidad mínima sin usar std::min
+                int cantidad = (faltante < disponible) ? faltante : disponible;
+                realizarMovimiento(producto, origen, destino, cantidad, totalMovimientos);
                 faltante -= cantidad;
+                totalMovimientos++;
             }
         }
     }
     
-    return movimientos;
+    // Copiar movimientos al arreglo resultado
+    for (int i = 0; i < totalMovimientos; i++) {
+        resultado[i] = movimientos[i];
+    }
+    
+    return totalMovimientos;
 }
 
 int OptimizadorGreedy::encontrarMejorOrigen(int producto, int destino) const {
@@ -73,12 +119,16 @@ int OptimizadorGreedy::encontrarMejorOrigen(int producto, int destino) const {
     return mejorOrigen;
 }
 
-void OptimizadorGreedy::realizarMovimiento(int producto, int origen, int destino, int cantidad) {
+// Realiza movimiento actualizando matrices y registrando en arreglo
+void OptimizadorGreedy::realizarMovimiento(int producto, int origen, int destino, int cantidad, int indice) {
+    // Actualizar matriz de stock
     stock[origen][producto] -= cantidad;
     stock[destino][producto] += cantidad;
     
+    // Calcular costo usando matriz de distancias
     int costo = cantidad * distancias[origen][destino];
     costoTotal += costo;
     
-    movimientos.emplace_back(producto, origen, destino, cantidad, costo);
+    // Registrar movimiento en arreglo estático
+    movimientos[indice] = Movimiento(producto, origen, destino, cantidad, costo);
 }

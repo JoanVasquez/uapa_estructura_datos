@@ -8,7 +8,7 @@ using namespace std;
 class Estudiante : public IEstudiante {
 private:
     string nombre, matricula;        // Datos identificativos del estudiante
-    array<double, 5> calificaciones; // Arreglo de 5 calificaciones
+    double calificaciones[5]; // Arreglo estático de 5 calificaciones
     double promedio;                 // Promedio calculado automáticamente
     string estado;                   // Estado académico actual
     static constexpr double NOTA_APROBACION = 70.0; // Nota mínima para aprobar
@@ -27,6 +27,6 @@ public:
     string getMatricula() const override { return matricula; }
     double getPromedio() const override { return promedio; }
     string getEstado() const override { return estado; }
-    void registrarCalificaciones(const array<double, 5>& notas) override;
+    void registrarCalificaciones(const double notas[5]);
     bool estaAprobado() const override { return promedio >= NOTA_APROBACION; }
 };
