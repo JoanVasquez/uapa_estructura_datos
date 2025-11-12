@@ -44,13 +44,13 @@ public:
 private:
     // Muestra el menú principal con todas las opciones disponibles
     void mostrarMenu() {
-        cout << "\n=== SISTEMA ACADÉMICO ===\n"
+        cout << "\n=== SISTEMA ACADEMICO ===\n"
                   << "1. Registrar estudiante\n"
                   << "2. Registrar calificaciones\n"
                   << "3. Mostrar aprobados\n"
                   << "4. Ordenar por promedio\n"
                   << "5. Mostrar todos\n"
-                  << "0. Salir\nOpción: ";
+                  << "0. Salir\nOpcion: ";
     }
 
     // Procesa la opción seleccionada por el usuario usando patrón Command
@@ -62,7 +62,7 @@ private:
             case 4: mostrarOrdenados(); break;        // Ordenar por promedio
             case 5: mostrarTodos(); break;            // Mostrar todos
             case 0: cout << "Saliendo...\n"; break;
-            default: cout << "Opción inválida\n";
+            default: cout << "Opcion invalida\n";
         }
     }
 
@@ -72,7 +72,7 @@ private:
         cin.ignore(); // Limpiar buffer de entrada
         cout << "Nombre: ";
         getline(cin, nombre); // Leer nombre completo con espacios
-        cout << "Matrícula: ";
+        cout << "Matricula: ";
         getline(cin, matricula);
         
         if (controller->registrarEstudiante(nombre, matricula)) {
@@ -88,12 +88,12 @@ private:
         double notas[5];
         
         cin.ignore();
-        cout << "Matrícula: ";
+        cout << "Matricula: ";
         getline(cin, matricula);
         
         cout << "Ingrese 5 calificaciones:\n";
         for (int i = 0; i < 5; ++i) {
-            cout << "Calificación " << (i + 1) << ": ";
+            cout << "Calificacion " << (i + 1) << ": ";
             cin >> notas[i];
         }
         

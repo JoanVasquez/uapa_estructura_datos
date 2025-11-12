@@ -42,15 +42,15 @@ public:
 private:
   // Muestra el menú principal con todas las opciones disponibles
   void mostrarMenu() {
-    cout << "\n=== ALMACÉN DE COMPONENTES ===\n"
+    cout << "\n=== ALMACEN DE COMPONENTES ===\n"
          << "1. Registrar componente nacional\n"
          << "2. Registrar componente importado\n"
          << "3. Modificar cantidad\n"
-         << "4. Modificar nivel mínimo\n"
+         << "4. Modificar nivel minimo\n"
          << "5. Nacionales por precio\n"
-         << "6. Importados por país\n"
+         << "6. Importados por pais\n"
          << "7. Componentes bajo stock\n"
-         << "0. Salir\nOpción: ";
+         << "0. Salir\nOpcion: ";
   }
 
   // Procesa la opción seleccionada por el usuario usando patrón Command
@@ -81,7 +81,7 @@ private:
       cout << "Saliendo...\n";
       break;
     default:
-      cout << "Opción inválida\n";
+      cout << "Opcion invalida\n";
       break;
     }
   }
@@ -93,7 +93,7 @@ private:
     int cantidad, minimo;
 
     cin.ignore(); // Limpiar buffer
-    cout << "Código: ";
+    cout << "Codigo: ";
     getline(cin, codigo);
     cout << "Nombre: ";
     getline(cin, nombre);
@@ -104,7 +104,7 @@ private:
     cin.ignore();
     cout << "Empresa: ";
     getline(cin, empresa);
-    cout << "Nivel mínimo: ";
+    cout << "Nivel minimo: ";
     cin >> minimo;
 
     if (service->registrarNacional(codigo, nombre, precio, cantidad, empresa, minimo)) {
@@ -121,7 +121,7 @@ private:
     int cantidad, minimo;
 
     cin.ignore();
-    cout << "Código: ";
+    cout << "Codigo: ";
     getline(cin, codigo);
     cout << "Nombre: ";
     getline(cin, nombre);
@@ -130,11 +130,11 @@ private:
     cout << "Cantidad: ";
     cin >> cantidad;
     cin.ignore();
-    cout << "País: ";
+    cout << "Pais: ";
     getline(cin, pais);
     cout << "Precio USD: ";
     cin >> precioUSD;
-    cout << "Nivel mínimo: ";
+    cout << "Nivel minimo: ";
     cin >> minimo;
 
     if (service->registrarImportado(codigo, nombre, precio, cantidad, pais, precioUSD, minimo)) {
@@ -149,7 +149,7 @@ private:
     string codigo;
     int cantidad;
     cin.ignore();
-    cout << "Código: ";
+    cout << "Codigo: ";
     getline(cin, codigo);
     cout << "Nueva cantidad: ";
     cin >> cantidad;
@@ -166,13 +166,13 @@ private:
     string codigo;
     int nivel;
     cin.ignore();
-    cout << "Código: ";
+    cout << "Codigo: ";
     getline(cin, codigo);
-    cout << "Nuevo nivel mínimo: ";
+    cout << "Nuevo nivel minimo: ";
     cin >> nivel;
     
     if (service->modificarNivelMinimo(codigo, nivel)) {
-      cout << "Nivel mínimo actualizado\n";
+      cout << "Nivel minimo actualizado\n";
     } else {
       cout << "Error: Componente no encontrado\n";
     }
@@ -181,7 +181,7 @@ private:
   // Lista componentes nacionales usando arreglo estático
   void listarNacionalesPorPrecio() {
     double minimo;
-    cout << "Precio mínimo: ";
+    cout << "Precio minimo: ";
     cin >> minimo;
     
     IComponente* resultado[IAlmacenRepository::MAX_COMPONENTES];
@@ -195,7 +195,7 @@ private:
   void listarImportadosPorPais() {
     string pais;
     cin.ignore();
-    cout << "País: ";
+    cout << "Pais: ";
     getline(cin, pais);
     
     IComponente* resultado[IAlmacenRepository::MAX_COMPONENTES];

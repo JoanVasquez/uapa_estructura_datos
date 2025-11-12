@@ -3,7 +3,7 @@ CXXFLAGS = -Wall -Wextra -std=c++14 -Iinclude
 SRCDIR = src
 SOURCES = $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
-TARGET = redistribucion
+TARGET = academia.exe
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) -o $(TARGET)
@@ -12,6 +12,6 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(SRCDIR)/*.o $(TARGET)
+	del /Q $(SRCDIR)\*.o $(TARGET) 2>nul || echo.
 
 .PHONY: clean

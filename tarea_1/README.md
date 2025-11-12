@@ -1,11 +1,11 @@
 # Estructura de Datos - Tarea 1
 
-Implementaciones profesionales de sistemas de gestión usando principios SOLID, Clean Code y patrón MVC.
+Implementaciones profesionales de sistemas de gestion usando principios SOLID, Clean Code y patron MVC.
 
 ## Proyectos Implementados
 
-### 1.1 Almacén de Componentes Electrónicos 🏢
-Sistema de gestión de inventario con componentes nacionales e importados.
+### 1.1 Almacen de Componentes Electronicos 🏢
+Sistema de gestion de inventario con componentes nacionales e importados.
 
 **Características:**
 - Patrón MVC con AlmacenController
@@ -18,8 +18,8 @@ Sistema de gestión de inventario con componentes nacionales e importados.
 cd 1.1_almacen && make && ./almacen
 ```
 
-### 1.2 Sistema Académico 🎓
-Gestión de calificaciones de estudiantes con 5 evaluaciones.
+### 1.2 Sistema Academico 🎓
+Gestion de calificaciones de estudiantes con 5 evaluaciones.
 
 **Características:**
 - AcademiaController coordinando operaciones
@@ -46,8 +46,8 @@ Sistema de inventario para 6 almacenes con 15 productos cada uno.
 cd 1.3_inventario && make && ./inventario
 ```
 
-### 1.4 Reasignación Óptima de Productos 🚚
-Algoritmo de redistribución entre almacenes minimizando costos.
+### 1.4 Reasignacion Optima de Productos 🚚
+Algoritmo de redistribucion entre almacenes minimizando costos.
 
 **Características:**
 - RedistribucionController en C++ y Python
@@ -66,31 +66,31 @@ cd 1.4_matrices/python && python3 main.py
 
 ## Arquitectura Profesional
 
-### Patrón MVC Implementado 🏢
+### Patron MVC Implementado 🏢
 - **Model**: Entidades de dominio (Componente, Estudiante, etc.)
 - **View**: Interfaz de usuario (UI classes)
-- **Controller**: Coordinación entre UI y Service
+- **Controller**: Coordinacion entre UI y Service
 
 ### Principios SOLID ✅
-- **S**ingle Responsibility: Cada clase tiene una responsabilidad única
+- **S**ingle Responsibility: Cada clase tiene una responsabilidad unica
 - **O**pen/Closed: Extensible mediante interfaces
 - **L**iskov Substitution: Intercambiabilidad de implementaciones
-- **I**nterface Segregation: Interfaces cohesivas y específicas
+- **I**nterface Segregation: Interfaces cohesivas y especificas
 - **D**ependency Inversion: Dependencias hacia abstracciones
 
 ### Patrones Implementados
-- **MVC Pattern**: Separación UI-Controller-Service
-- **Repository Pattern**: Abstracción de persistencia
-- **Factory Pattern**: Creación de objetos
+- **MVC Pattern**: Separacion UI-Controller-Service
+- **Repository Pattern**: Abstraccion de persistencia
+- **Factory Pattern**: Creacion de objetos
 - **Strategy Pattern**: Algoritmos intercambiables
-- **Dependency Injection**: Inyección de dependencias
+- **Dependency Injection**: Inyeccion de dependencias
 
 ### Características Técnicas
 - **Arquitectura en capas**: UI → Controller → Service → Repository
-- **Manejo robusto de errores** con excepciones específicas
+- **Manejo robusto de errores** con excepciones especificas
 - **Validaciones de entrada** en todas las capas
-- **Smart pointers** (C++) para gestión segura de memoria
-- **Type hints** (Python) para claridad de código
+- **Smart pointers** (C++) para gestion segura de memoria
+- **Type hints** (Python) para claridad de codigo
 - **using namespace std** para legibilidad
 - **Comentarios explicativos** en todas las funciones
 
@@ -98,38 +98,43 @@ cd 1.4_matrices/python && python3 main.py
 
 ```
 tarea_1/
-├── 1.1_almacen/           # Componentes electrónicos
+├── 1.1_almacen/           # Componentes electronicos
 │   ├── include/           # Headers (Interfaces, Controllers, Services)
 │   ├── src/              # Implementaciones con MVC
-│   └── Makefile
-├── 1.2_bootcamp/         # Sistema académico
+│   ├── Makefile          # Linux/macOS
+│   └── Makefile.win      # Windows
+├── 1.2_bootcamp/         # Sistema academico
 │   ├── include/           # Arquitectura MVC
 │   ├── src/              # Controllers + Services
-│   └── Makefile
+│   ├── Makefile          # Linux/macOS
+│   └── Makefile.win      # Windows
 ├── 1.3_inventario/       # Inventario multi-sucursal
-│   ├── include/           # Patrón MVC completo
-│   ├── src/              # Separación de responsabilidades
-│   └── Makefile
-├── 1.4_matrices/         # Reasignación óptima
-│   ├── cpp/              # MVC en C++
-│   └── python/           # MVC en Python
+│   ├── include/           # Patron MVC completo
+│   ├── src/              # Separacion de responsabilidades
+│   ├── Makefile          # Linux/macOS
+│   └── Makefile.win      # Windows
+├── compile_all.sh        # Script Linux/macOS
+├── compile_all.bat       # Script Windows
 ├── .gitignore
 └── README.md
 ```
 
-## Compilación Global
+## Compilacion
 
+### Linux/macOS
 ```bash
-# Compilar todos los proyectos C++
-for dir in 1.1_almacen 1.2_bootcamp 1.3_inventario 1.4_matrices/cpp; do
-    cd $dir && make && cd ..
-done
+bash compile_all.sh
+```
+
+### Windows
+```cmd
+compile_all.bat
 ```
 
 ## Tecnologías Utilizadas
 
 - **C++14/17** con STL y using namespace std
 - **Python 3.8+** con type hints y MVC
-- **Make** para compilación automatizada
-- **Arquitectura MVC** con separación de capas
-- **Comentarios explicativos** en español
+- **Make** para compilacion automatizada
+- **Arquitectura MVC** con separacion de capas
+- **Sin acentos** para compatibilidad multiplataforma

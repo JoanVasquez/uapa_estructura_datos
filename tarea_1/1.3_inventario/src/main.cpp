@@ -4,12 +4,12 @@ void mostrarMenu() {
     std::cout << "\n========== SISTEMA DE INVENTARIO ==========\n"
               << "1. Registrar existencias\n"
               << "2. Detectar productos agotados\n"
-              << "3. Mostrar almacén con menor stock\n"
+              << "3. Mostrar almacen con menor stock\n"
               << "4. Emitir alertas de stock bajo\n"
-              << "5. Configurar umbral mínimo\n"
+              << "5. Configurar umbral minimo\n"
               << "6. Mostrar stock general\n"
               << "0. Salir\n"
-              << "Seleccione una opción: ";
+              << "Seleccione una opcion: ";
 }
 
 int main() {
@@ -19,7 +19,7 @@ int main() {
     while (true) {
         mostrarMenu();
         if (!(std::cin >> opcion)) {
-            std::cerr << "Entrada inválida.\n";
+            std::cerr << "Entrada invalida.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             continue;
@@ -36,7 +36,7 @@ int main() {
                 std::cout << "\nSaliendo del sistema. ¡Hasta luego!\n";
                 return 0;
             default:
-                std::cout << "Opción no válida.\n";
+                std::cout << "Opcion no valida.\n";
                 break;
         }
     }
