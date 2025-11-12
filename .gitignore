@@ -4,12 +4,6 @@
 *.out
 *.app
 
-# Ejecutables
-almacen
-academia
-inventario
-redistribucion
-
 # Archivos temporales
 *.tmp
 *.swp
