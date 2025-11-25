@@ -1,9 +1,9 @@
-#ifndef PACKINGVIEW_H
-#define PACKINGVIEW_H
+#ifndef SHOPPINGVIEW_H
+#define SHOPPINGVIEW_H
 
 #include <string>
 
-class PackingView {
+class ShoppingView {
 public:
     static void displayWelcome();
     static void displayGoodbye();

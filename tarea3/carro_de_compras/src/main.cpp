@@ -1,26 +1,26 @@
-#include "controllers/PackingController.h"
-#include "services/PackingService.h"
-#include "repositories/QueueRepository.h"
-#include "views/PackingView.h"
+#include "controllers/ShoppingController.h"
+#include "services/ShoppingService.h"
+#include "repositories/CartRepository.h"
+#include "views/ShoppingView.h"
 #include <iostream>
 
 int main() {
-    PackingView::displayWelcome();
+    ShoppingView::displayWelcome();
     
     try {
-        QueueRepository* repository = new QueueRepository();
-        PackingService* service = new PackingService(repository);
-        PackingController* controller = new PackingController(service);
+        CartRepository* repository = new CartRepository();
+        ShoppingService* service = new ShoppingService(repository);
+        ShoppingController* controller = new ShoppingController(service);
         
         controller->run();
         
         delete controller;
         
     } catch (const std::exception& e) {
-        std::cout << "💥 Error critico: " << e.what() << "\n";
+        std::cout << "Error critico: " << e.what() << "\n";
         return 1;
     }
     
-    PackingView::displayGoodbye();
+    ShoppingView::displayGoodbye();
     return 0;
 }

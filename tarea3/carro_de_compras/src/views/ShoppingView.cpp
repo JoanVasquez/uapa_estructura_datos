@@ -1,16 +1,16 @@
-#include "views/PackingView.h"
+#include "views/ShoppingView.h"
 #include <iostream>
 
-void PackingView::displayWelcome() {
+void ShoppingView::displayWelcome() {
     std::cout << "========================================\n";
-    std::cout << "     🏭 SIMULADOR DE COLA DE EMPAQUE 🏭\n";
+    std::cout << "       CARRITO DE COMPRAS ONLINE\n";
     std::cout << "========================================\n";
-    std::cout << "   Sistema de Gestion de Almacen (FIFO)\n";
+    std::cout << "     Sistema de Checkout y Pagos\n";
     std::cout << "========================================\n";
 }
 
-void PackingView::displayGoodbye() {
+void ShoppingView::displayGoodbye() {
     std::cout << "========================================\n";
-    std::cout << "     👋 SIMULACION FINALIZADA\n";
+    std::cout << "        COMPRAS FINALIZADAS\n";
     std::cout << "========================================\n";
 }
